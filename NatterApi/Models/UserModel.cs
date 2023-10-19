@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace NatterApi.Models;
 
@@ -13,6 +14,7 @@ public class UserModel {
     public string Email { get; set; }
 
     [Required]
+    [JsonIgnore]
     public string Password { get; set; }
 
 }

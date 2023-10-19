@@ -4,14 +4,10 @@ using NatterApi.Models;
 
 namespace NatterApi.Controllers;
 
+[Route("/api")]
 public class Home : Controller {
     
     public IActionResult Index() {
         return Ok("Welcome to Natter API");
-    }
-
-    [HttpPost]
-    public IActionResult Test([FromBody] UserModel user) {
-        return Json(JsonSerializer.Serialize(user));
     }
 }
