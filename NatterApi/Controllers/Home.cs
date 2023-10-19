@@ -4,6 +4,7 @@ using NatterApi.Models;
 
 namespace NatterApi.Controllers;
 
+[ApiController]
 [Route("/api")]
 public class Home : Controller {
     
