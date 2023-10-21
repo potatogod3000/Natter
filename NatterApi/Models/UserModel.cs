@@ -17,4 +17,7 @@ public class UserModel {
     [JsonIgnore]
     public string Password { get; set; }
 
+    public int PhoneNumber { get; set; }
+
+    public string Country { get; set; }
 }
