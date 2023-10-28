@@ -1,11 +1,18 @@
 import { defineStore } from 'pinia'
-import router from '../router'
 
 export const useUserStore = defineStore('userStore', {
     state: () => {
         return {
-            username: String,
-            isLoggedIn: Boolean
-        }    
+            username: "",
+            isLoggedIn: false
+        }
     },
+    getters: {
+        getLoginStatus: (state) => {
+            return(isLoggedIn) => state.isLoggedIn = isLoggedIn
+        },
+        getUsername: (state) => {
+            return(username) => state.username = username
+        }
+    }
 })
