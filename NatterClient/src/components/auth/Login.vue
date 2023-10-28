@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 import { useUserStore } from '@/stores/userStore';
-import { RouterLink } from 'vue-router';
 const userStore = useUserStore()
 
 const email = ref('')
@@ -25,12 +24,13 @@ async function loginAction() {
         received.value = await response.json()
 
         if(response.ok) {
-            userStore.isLoggedIn = true
-            userStore.username = received.value.username
+            userStore.getLoginStatus(true)
+            userStore.getUsername(received.value.username)
             router.push('/')
         }
         else {
-            userStore.isLoggedIn = false
+            userStore.getLoginStatus(false)
+            userStore.getUsername("")
         }
     }
     catch(error) {
@@ -41,39 +41,39 @@ async function loginAction() {
 </script>
 
 <template>
+    <div class="flex flex-col justify-center items-center">
+        <form @submit.prevent class="flex flex-col gap-5">
+            <div>
+                <label> E-Mail
+                    <input type="email"
+                        class="outline-none border-2" :class="email === '' ? 'border-red-600' : 'border-green-600'"
+                        v-model="email"
+                    />
+                </label>
+            </div>
 
-    <form @submit.prevent>
-        <div>
-            <label> E-Mail
-                <input type="email"
-                    class="outline-none border-2" :class="email === '' ? 'border-red-600' : 'border-green-600'"
-                    v-model="email"
-                />
-            </label>
-        </div>
+            <div>
+                <label> Password
+                    <input type="password"
+                        class="outline-none border-2" :class="password.length <= 8 ? 'border-red-600' : 'border-green-600'"
+                        v-model="password"
+                    />
+                </label>
+            </div>
 
-        <div>
-            <label> Password
-                <input type="password"
-                    class="outline-none border-2" :class="password.length <= 8 ? 'border-red-600' : 'border-green-600'"
-                    v-model="password"
-                />
-            </label>
-        </div>
+            <button @click="loginAction"
+                :disabled="email === '' || password === '' || password.length <= 8 ? true : false"
+            >Submit</button>
+            
+            <!-- For "errors" object generated when validation error at backend -->
+            <div v-if="!userStore.isLoggedIn && received.errors" v-for="(error, index) in received.errors" v-text="error" :key="index"></div>
+            
+            <!-- For errors returned from backend due to invalid password/email -->
+            <div v-else-if="!userStore.isLoggedIn && received.message" v-text="received.message"></div>
+        </form>
 
-        <button @click="loginAction"
-            :disabled="email === '' || password === '' || password.length <= 8 ? true : false"
-        >Submit</button>
-        
-        <!-- For "errors" object generated when validation error at backend -->
-        <div v-if="!userStore.isLoggedIn && received.errors" v-for="(error, index) in received.errors" v-text="error" :key="index"></div>
-        
-        <!-- For errors returned from backend due to invalid password/email -->
-        <div v-else-if="!userStore.isLoggedIn && received.message" v-text="received.message"></div>
-    </form>
-
-    <RouterLink to="register">Dont have a Natter Account?</RouterLink>
-
+        <p>Dont have a Natter Account? Click Here!</p>
+    </div>
 </template>
 
 <style scoped>

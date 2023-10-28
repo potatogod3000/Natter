@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import router from "../../router"
+import { RouterLink } from 'vue-router';
 
 const email = ref('')
 const username = ref('')
@@ -45,32 +45,34 @@ async function submitAction() {
 </script>
 
 <template>
-    <form @submit.prevent>
-        <label> EMail
-            <input type="email" v-model="email" />
-        </label>
-        <label> Username
-            <input type="text" v-model="username"  />
-        </label>
-        <label> Password
-            <input type="password" v-model="password" />
-        </label>
-        <label> Country
-            <select name="country" v-model="country">
-                <option selected>Select a country</option>
-                <option value="IN">India</option>
-            </select>
-        </label>
-        <label> Phone Number
-            <input type="tel" v-model="phoneNumber" placeholder="Enter phone number" pattern="[0-9]{10}"/>
-        </label>
+    <div class="flex flex-col justify-center items-center">
+        <form @submit.prevent class="flex flex-col gap-5">
+            <label> EMail
+                <input type="email" v-model="email" />
+            </label>
+            <label> Username
+                <input type="text" v-model="username"  />
+            </label>
+            <label> Password
+                <input type="password" v-model="password" />
+            </label>
+            <label> Country
+                <select name="country" v-model="country">
+                    <option selected>Select a country</option>
+                    <option value="IN">India</option>
+                </select>
+            </label>
+            <label> Phone Number
+                <input type="tel" v-model="phoneNumber" placeholder="Enter phone number" pattern="[0-9]{10}"/>
+            </label>
 
-        <button @click="submitAction">Submit</button>
-    </form>
+            <button @click="submitAction">Submit</button>
+        </form>
 
-    <div v-if="!registrationSuccessful && received.message" v-text="received.message"></div>
-    <div v-if="!registrationSuccessful && received.errors" v-for="(error, index) in received.errors" v-text="error" :key="index"></div>
+        <div class="text-red-400" v-if="!registrationSuccessful && received.message" v-text="received.message"></div>
+        <div class="text-red-400" v-if="!registrationSuccessful && received.errors" v-for="(error, index) in received.errors" v-text="error" :key="index"></div>
 
-    <RouterLink to="login">Already have a Natter Account?</RouterLink>
+        <p>Already have a Natter Account? Click Here!</p>
+    </div>
 
 </template>
