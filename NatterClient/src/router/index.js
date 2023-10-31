@@ -7,7 +7,11 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: {
+        title: "Home",
+        navTransparent: true
+      }
     },
     {
       path: '/about',
@@ -15,36 +19,47 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@/views/AboutView.vue')
+      component: () => import('@/views/AboutView.vue'),
+      meta: {
+        title: "About"
+      }
     },
 
     // Auth Routes
     {
       path: '/auth',
       name: 'auth',
-      component: () => import('@/views/AuthView.vue')
+      component: () => import('@/views/AuthView.vue'),
+      meta: {
+        title: "Authenticate"
+      }
     },
+
+    // Profile Page Route
     {
-      path: '/auth/login',
-      name: 'login',
-      component: () => import('@/components/auth/Login.vue')
+      path: '/profile',
+      name: 'profile',
+      component: () => import('@/views/ProfileView.vue'),
+      meta: {
+        title: "User Profile"
+      }
     },
-    {
-      path: '/auth/register',
-      name: 'register',
-      component: () => import('@/components/auth/Register.vue')
-    },
-    
+
     // Chat Routes
     {
       path: "/chats",
       name: 'chats',
       component: () => import('@/views/ChatsView.vue'),
       meta: {
+        title: "Natter Chat",
         hideNav: true
       }
     }
   ]
+})
+
+router.beforeEach((to, from) => {
+  document.title = to.meta?.title ? `${to.meta.title} - Natter` : "Natter"
 })
 
 export default router
