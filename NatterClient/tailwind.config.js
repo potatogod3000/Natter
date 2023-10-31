@@ -7,14 +7,24 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        "hero": "url('@/assets/images/hero-bg.png')"
+      },
       colors: {
-        darkest: '#352F44',
-        darker: '#5C5470',
-        lighter: '#B9B4C7',
-        lightest: '#FAF0E6',
+        "primary": "",
+        "dark-primary": "",
+        "secondary": "",
+        "dark-secondary": "",
+        "accent": ""
+      },
+      fontFamily: {
+        palanquin: ['Palanquin', 'sans-serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
+      },
+      screens: {
+        "wide": "1440px"
       }
     },
   },
   plugins: [],
 }
-
