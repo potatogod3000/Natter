@@ -7,22 +7,20 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "hero": "url('@/assets/images/hero-bg.png')"
-      },
       colors: {
-        "primary": "",
-        "dark-primary": "",
-        "secondary": "",
-        "dark-secondary": "",
-        "accent": ""
+        "dark": "#1e1e20",
+        "dark-soft": "#252529",
+        "light": "#e3e3e5",
+        "light-soft": "#f6f6f7",
+        "accent": "#646cff"
       },
       fontFamily: {
         palanquin: ['Palanquin', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
       },
-      screens: {
-        "wide": "1440px"
+      container: {
+        padding: "2rem",
+        center: true
       }
     },
   },
