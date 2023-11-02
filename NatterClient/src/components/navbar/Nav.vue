@@ -6,19 +6,36 @@ const userStore = useUserStore()
 </script>
 
 <template>
-    <header class="bg-slate-300 dark:bg-gray-950 text-green-400 border-b border-green-400 font-bold">
-        <ul class="container mx-auto">
-            <div class="flex h-14 items-center justify-between">
-                <li><RouterLink to="/"><img src="/favicon.ico" width="32" /></RouterLink></li>
-                
-                <div class="flex gap-8">
-                    <li><RouterLink to="/about" class="hover:underline underline-offset-8 transition-all">About</RouterLink></li>
-                    <li><RouterLink to="/chats" class="hover:underline underline-offset-8 transition-all">Natter Chat</RouterLink></li>
+    <header class="fixed top-0 left-0 right-0 z-10 bg-light-soft/95 dark:bg-dark-soft/95 filter backdrop-blur">
+        <nav class="container py-2">
+            <ul>
+                <div class="flex items-center justify-between font-bold text-black dark:text-white">
+                    <li>
+                        <RouterLink :to="{name: 'home'}" class="flex items-center gap-1">
+                            <img src="/favicon.ico" width="32" />
+                            <span class="text-lg">Natter</span>
+                        </RouterLink>
+                    </li>
+                    
+                    <div class="flex gap-8">
+
+                        <li>
+                            <RouterLink :to="{name: 'about'}" class="hover:underline underline-offset-8 transition-all duration-200">About</RouterLink>
+                        </li>
+                        <li>
+                            <RouterLink :to="{name: 'chats'}" class="hover:underline underline-offset-8 transition-all duration-200">Natter Chat</RouterLink>
+                        </li>
+
+                        <li v-if="!userStore.isLoggedIn">
+                            <RouterLink :to="{name: 'auth'}" class="hover:underline underline-offset-8 transition-all duration-200">Login / Register</RouterLink>
+                        </li>
+                        <li v-else>
+                            <RouterLink :to="{name: 'profile'}" class="hover:underline underline-offset-8 transition-all duration-200">Hello, {{ userStore.username }}</RouterLink>
+                        </li>
+                    
+                    </div>
                 </div>
-                
-                <li v-if="!userStore.isLoggedIn"><RouterLink to="/auth" class="hover:underline underline-offset-8 transition-all">Login / Register</RouterLink></li>
-                <li v-else><RouterLink to="/profile" class="hover:underline underline-offset-8 transition-all">Hello, {{ userStore.username }}</RouterLink></li>
-            </div>
-        </ul>
+            </ul>
+        </nav>
     </header>
 </template>
