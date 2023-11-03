@@ -5,6 +5,9 @@ module.exports = {
     "./index.html",
     "./src/**/*.{vue,js}"
   ],
+
+  // darkMode: "class",
+  
   theme: {
     extend: {
       colors: {
@@ -12,7 +15,8 @@ module.exports = {
         "dark-soft": "#252529",
         "light": "#e3e3e5",
         "light-soft": "#f6f6f7",
-        "accent": "#646cff"
+        "accent": "#448aff",
+        "accent-light": "#82b1ff"
       },
       fontFamily: {
         palanquin: ['Palanquin', 'sans-serif'],
@@ -24,5 +28,6 @@ module.exports = {
       }
     },
   },
+  
   plugins: [],
 }
