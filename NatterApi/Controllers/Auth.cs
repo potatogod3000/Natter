@@ -11,10 +11,12 @@ public class Auth : Controller {
     
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly IJwtHandler _jwtHandler;
     
-    public Auth(IUserRepository userRepository, IPasswordHasher passwordHasher) {
+    public Auth(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtHandler jwtHandler) {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _jwtHandler = jwtHandler;
     }
 
     [HttpPost("register")]
@@ -53,21 +55,27 @@ public class Auth : Controller {
             UserModel user = await _userRepository.GetByEmail(loginRequest.Email);
 
             if(user == null) {
-                return BadRequest( new { message = "Email or Password is incorrect" });
+                return BadRequest(new { errors = new {
+                    error = "Email or Password is incorrect"
+                }});
             }
 
             bool passwordCheck = _passwordHasher.Verify(user.Password, loginRequest.Password);
 
             if(passwordCheck) {
-                Response.Cookies.Append("jwtAuth", "");
+                var jwt = _jwtHandler.CreateToken(user.UserName);
 
-                return Ok(new { message = "Logged In" });
+                return Ok(jwt);
             }
             
-            return BadRequest(new { message = "Email or Password is incorrect" });
+            return BadRequest(new { errors = new {
+                error = "Email or Password is incorrect"
+            }});
         }
         
-        return BadRequest(new { message = "Please enter all the required information" });
+        return BadRequest(new { errors = new {
+            error = "Please enter all the required information"
+        }});
     }
 
     [HttpPost("logout")]

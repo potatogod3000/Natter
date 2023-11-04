@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using NatterApi.Data;
 using NatterApi.Abstractions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var DatabaseConnection = builder.Configuration["ConnectionStrings:NatterDatabase"];
+var config = builder.Configuration;
+var DatabaseConnection = config["ConnectionStrings:NatterDatabase"];
 
 builder.Services.AddControllers();
 builder.Services.AddCors();
@@ -13,10 +15,13 @@ builder.Services.AddDbContext<UserContext>(options => options.UseNpgsql(Database
 
 builder.Services.Configure<JwtHandler>(builder.Configuration.GetSection("JwtConfig"));
 
-builder.Services.AddAuthentication(options => {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+builder.Services.AddAuthentication().AddJwtBearer(options => {
+    options.TokenValidationParameters = new() {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(config["Authentication:Schemes:Bearer:SigningKeys:0:Value"]!))
+    };
 });
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -32,7 +37,8 @@ app.UseCors(config => {
     config.WithOrigins("http://localhost:3000");
 });
 
-app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 
 app.Run();
