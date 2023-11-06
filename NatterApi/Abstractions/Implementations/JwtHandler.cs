@@ -7,27 +7,39 @@ using NatterApi.Models;
 namespace NatterApi.Abstractions;
 
 public class JwtHandler : IJwtHandler {
-
+    
     private readonly IConfiguration _configuration;
 
-    public JwtHandler(IConfiguration configuration) {
+    public JwtHandler(IConfiguration configuration)
+    {
         _configuration = configuration;
     }
 
-    public string CreateToken(string username) {
-        List<Claim> claims = new() {
-            new Claim(ClaimTypes.Name, username)
+    public string CreateToken(UserModel verifiedUser) {
+
+        var jwtTokenHandler = new JwtSecurityTokenHandler();
+        
+        var secretKey = Encoding.ASCII.GetBytes(_configuration.GetSection("JwtConfig:Secret").Value!);
+        
+        var tokenDescriptor = new SecurityTokenDescriptor() {
+            // Issuer = ,
+            Subject = new ClaimsIdentity( new [] {
+                new Claim("Id", verifiedUser.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, verifiedUser.UserName),
+                new Claim(JwtRegisteredClaimNames.Name, verifiedUser.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, verifiedUser.Email),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            }),
+            Expires = DateTime.UtcNow.AddHours(2),
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(secretKey),
+                SecurityAlgorithms.HmacSha512
+            )
         };
+        
+        var token = jwtTokenHandler.CreateToken(tokenDescriptor);
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Authentication:Schemes:Bearer:SigningKeys:0:Value"]!));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-        var token = new JwtSecurityToken(
-            claims: claims,
-            expires: DateTime.Now.AddHours(2),
-            signingCredentials: credentials
-        );
-
-        string jwtString = new JwtSecurityTokenHandler().WriteToken(token);
+        string jwtString = jwtTokenHandler.WriteToken(token);
 
         return jwtString;
     }

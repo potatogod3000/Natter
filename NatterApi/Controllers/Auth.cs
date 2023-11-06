@@ -63,7 +63,7 @@ public class Auth : Controller {
             bool passwordCheck = _passwordHasher.Verify(user.Password, loginRequest.Password);
 
             if(passwordCheck) {
-                var jwt = _jwtHandler.CreateToken(user.UserName);
+                var jwt = _jwtHandler.CreateToken(user);
 
                 return Ok(jwt);
             }

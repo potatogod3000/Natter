@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using NatterApi.Data;
 using NatterApi.Abstractions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -9,18 +10,27 @@ var config = builder.Configuration;
 var DatabaseConnection = config["ConnectionStrings:NatterDatabase"];
 
 builder.Services.AddControllers();
-builder.Services.AddCors();
+
+builder.Services.AddCors(options => {
+    options.AddPolicy("Frontend", policy => {
+        policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    });
+});
 
 builder.Services.AddDbContext<UserContext>(options => options.UseNpgsql(DatabaseConnection));
 
-builder.Services.Configure<JwtHandler>(builder.Configuration.GetSection("JwtConfig"));
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+.AddJwtBearer(options => {
+    var key = Encoding.ASCII.GetBytes(config.GetSection("JwtConfig:Secret").Value!);
 
-builder.Services.AddAuthentication().AddJwtBearer(options => {
+    options.SaveToken = true;
     options.TokenValidationParameters = new() {
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuerSigningKey = true,
         ValidateIssuer = false,
         ValidateAudience = false,
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Convert.FromBase64String(config["Authentication:Schemes:Bearer:SigningKeys:0:Value"]!))
+        RequireExpirationTime = false,
+        ValidateLifetime = false
     };
 });
 
@@ -30,13 +40,9 @@ builder.Services.AddScoped<IJwtHandler, JwtHandler>();
 
 var app = builder.Build();
 
-app.UseCors(config => {
-    config.AllowAnyHeader();
-    config.AllowAnyMethod();
-    config.AllowCredentials();
-    config.WithOrigins("http://localhost:3000");
-});
+app.UseCors("Frontend");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
