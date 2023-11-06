@@ -6,7 +6,7 @@ module.exports = {
     "./src/**/*.{vue,js}"
   ],
 
-  // darkMode: "class",
+  darkMode: "class",
   
   theme: {
     extend: {
