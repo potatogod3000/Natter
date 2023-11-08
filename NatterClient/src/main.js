@@ -27,8 +27,5 @@ app.use(router)
 
 app.component('font-awesome-icon', FontAwesomeIcon)
 
-// Global Properties
-app.provide('apiUrl', 'http://localhost:5000')
-
 // Mount App in <div id="app"> at index.html
 app.mount('#app')
