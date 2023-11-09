@@ -6,7 +6,7 @@ const toggleDark = useToggle(isDark);
 </script>
 
 <template>
-    <div class="ml-8 cursor-pointer" @click="toggleDark()">
+    <div class="cursor-pointer text-dark dark:text-light" @click="toggleDark()">
         {{ isDark ? "Dark" : "Light" }}
     </div>
 </template>
