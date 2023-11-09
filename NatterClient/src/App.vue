@@ -8,7 +8,7 @@ import NavFooter from './components/navbar/NavFooter.vue'
   <main class="flex flex-col min-h-screen">
     <Nav v-if="!$route.meta.hideNav" />
 
-    <section class="flex-grow">
+    <section class="flex-grow min-h-screen">
       <RouterView />
     </section>
 
