@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using NatterApi.Data;
 using NatterApi.Abstractions;
+using NatterApi.Hubs;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -17,7 +19,7 @@ builder.Services.AddCors(options => {
     });
 });
 
-builder.Services.AddDbContext<UserContext>(options => options.UseNpgsql(DatabaseConnection));
+builder.Services.AddDbContext<NatterDbContext>(options => options.UseNpgsql(DatabaseConnection));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options => {
@@ -36,7 +38,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IServerHandler, ServerHandler>();
 builder.Services.AddScoped<IJwtHandler, JwtHandler>();
+
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -46,5 +51,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<Chats>("api/chathub");
 
 app.Run();
