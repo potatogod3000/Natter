@@ -3,10 +3,12 @@ using NatterApi.Models;
 
 namespace NatterApi.Data;
 
-public class UserContext: DbContext {
-    public UserContext(DbContextOptions<UserContext> options): base(options) {}
+public class NatterDbContext: DbContext {
+    public NatterDbContext(DbContextOptions<NatterDbContext> options): base(options) {}
 
     public DbSet<UserModel> Users { get; set; }
+
+    public DbSet<ServerModel> Servers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
