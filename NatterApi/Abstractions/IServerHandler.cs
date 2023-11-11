@@ -1,11 +1,15 @@
+using NatterApi.Models;
 using NatterApi.Models.DTOs;
 
 namespace NatterApi.Abstractions;
 
 public interface IServerHandler {
 
-  Task<bool> CreateAsync(ServerCreateDto newServer);
+  string FailureReason { get; set; }
 
-  Task<bool> DeleteAsync(ServerDeleteDto server);
+  Task<bool> CreateAsync(ServerCreateDto serverCreateDto);
 
+  Task<bool> Delete(string serverName, string currentUsername);
+
+  Task<ServerModel> GetByName(string serverName);
 }
