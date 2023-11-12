@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NatterApi.Models;
 
 namespace NatterApi.Data;
 
-public class NatterDbContext: DbContext {
+public class NatterDbContext: IdentityDbContext<ApplicationUser> {
     public NatterDbContext(DbContextOptions<NatterDbContext> options): base(options) {}
 
     public DbSet<UserModel> Users { get; set; }
