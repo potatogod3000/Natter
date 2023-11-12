@@ -36,8 +36,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     };
 });
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IServerHandler, ServerHandler>();
 builder.Services.AddScoped<IJwtHandler, JwtHandler>();
 
