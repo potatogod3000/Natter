@@ -2,86 +2,115 @@ using Microsoft.AspNetCore.Mvc;
 using NatterApi.Abstractions;
 using NatterApi.Models.DTOs;
 using NatterApi.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace NatterApi.Controllers;
 
 [ApiController]
 [Route("api/auth")]
-public class Auth : Controller {
+public class Auth : ControllerBase {
     
-    private readonly IUserRepository _userRepository;
-    private readonly IPasswordHasher _passwordHasher;
+    private readonly UserManager<NatterUser> _userManager;
     private readonly IJwtHandler _jwtHandler;
     
-    public Auth(IUserRepository userRepository, IPasswordHasher passwordHasher, IJwtHandler jwtHandler) {
-        _userRepository = userRepository;
-        _passwordHasher = passwordHasher;
+    public Auth(UserManager<NatterUser> userManager, IJwtHandler jwtHandler) {
+        _userManager = userManager;
         _jwtHandler = jwtHandler;
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerRequest) {
-        string hashedPassword = _passwordHasher.HashPassword(registerRequest.Password);
         
         if(ModelState.IsValid) {
-            UserModel user = new() {
-                UserName = registerRequest.Username,
+            var newUser = new NatterUser() {
+                UserName = registerRequest.UserName,
                 Email = registerRequest.Email,
-                Password = hashedPassword,
                 Country = registerRequest.Country,
-                PhoneNumber = registerRequest.PhoneNumber
+                PhoneNumber = registerRequest.PhoneNumber,
             };
 
-            bool usernameCheck = await _userRepository.UsernameCheck(user.UserName);
-            bool emailCheck = await _userRepository.EmailCheck(user.Email);
-
-            if(emailCheck && usernameCheck) return BadRequest(new { message = "Email and Username already exists", emailAlreadyExists = true, usernameAlreadyExists = true  });
-            if(emailCheck) return BadRequest(new { message = "Email already exists", emailAlreadyExists = true });
-            if(usernameCheck) return BadRequest(new { message = "Username already exists", usernameAlreadyExists = true });
+            var createdUser = await _userManager.CreateAsync(newUser, registerRequest.Password);
             
-            await _userRepository.Create(user);
-            return Ok(new { message = $"User {user.UserName} has been registered" });
+            if(createdUser.Succeeded) {
+                return Ok( new { message = $"User '{newUser.UserName}' has been registered successfully" });
+            }
+            
+            return BadRequest(new { message = createdUser.Errors});
         }
 
-        else {
-            return BadRequest(new { message = "Please enter all the required information" });
-        }
+        return BadRequest(new { message = "Please enter all the required information" });
+
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDto loginRequest) {
         
         if(ModelState.IsValid) {
-            UserModel user = await _userRepository.GetByEmail(loginRequest.Email);
+            NatterUser user =  await _userManager.FindByEmailAsync(loginRequest.Email);
 
             if(user == null) {
-                return BadRequest(new { errors = new {
-                    error = "Email or Password is incorrect"
-                }});
+                return BadRequest(new { message = "Email or Password is incorrect" });
             }
 
-            bool passwordCheck = _passwordHasher.Verify(user.Password, loginRequest.Password);
+            bool passwordCheck = await _userManager.CheckPasswordAsync(user, loginRequest.Password);
 
-            if(passwordCheck) {
-                var jwt = _jwtHandler.CreateToken(user);
-
-                return Ok(jwt);
+            if(!passwordCheck) {
+                return BadRequest(new { message = "Email or Password is incorrect" });
             }
             
-            return BadRequest(new { errors = new {
-                error = "Email or Password is incorrect"
-            }});
+            var jwt = await _jwtHandler.CreateTokenAsync(user);
+            user.RefreshToken = Guid.NewGuid().ToString();
+
+            Response.Cookies.Append("X-Access-Token", jwt, new CookieOptions() {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
+
+            Response.Cookies.Append("X-Username", user.UserName, new CookieOptions() {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
+
+            Response.Cookies.Append("X-Refresh-Token", user.RefreshToken, new CookieOptions() {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
+
+            return Ok(new { message = "Login succeeded!", username = user.UserName });
         }
         
-        return BadRequest(new { errors = new {
-            error = "Please enter all the required information"
-        }});
+        return BadRequest(new { message = "Please enter all the required information" });
+    }
+
+    [HttpGet("refresh")]
+    public async Task<IActionResult> RefreshToken() {
+        if(Request.Cookies.TryGetValue("X-Refresh-Token", out var refreshToken) && Request.Cookies.TryGetValue("X-Username", out var username)) {
+            
+            if(Request.Cookies.TryGetValue("X-Access-Token", out var acquiredToken)) {
+                Response.Cookies.Delete("X-Access-Token");
+            }
+            
+            return BadRequest(new { message = "Token expired! Please re-login."});
+        }
+
+        return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
     [HttpPost("logout")]
-    public IActionResult Logout(int id) {
-        Response.Cookies.Delete("jwtAuth");
+    public IActionResult Logout() {
+        var jwtString = Request.Cookies["token"];
+        
+        if(jwtString != null) {
+            var verifiedToken = _jwtHandler.VerifyToken(jwtString);
+            int userId = int.Parse(verifiedToken.Subject);
+            Response.Cookies.Delete("token");
 
-        return Ok(new { message = "Logged out" });
+            return Ok(new { message = "Logged out" });
+        }
+
+        return BadRequest( new { message = "Token error" });
     }
 }
