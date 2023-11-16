@@ -13,6 +13,7 @@ public static class ServicesConfiguration {
     public static IServiceCollection AddIdentity(this IServiceCollection services) {
         
         services.AddIdentity<NatterUser, IdentityRole>(options => {
+            options.SignIn.RequireConfirmedEmail = false;
             options.User.RequireUniqueEmail = true;
         })
         .AddEntityFrameworkStores<NatterDbContext>()
