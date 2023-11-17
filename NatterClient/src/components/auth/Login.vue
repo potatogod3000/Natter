@@ -1,10 +1,16 @@
 <script setup>
 import { ref } from 'vue';
 import { useUserStore } from '@/stores/userStore';
+import { authUrl } from '@/assets/contents/apiUrls.js';
+import router from '@/router'
+
 const userStore = useUserStore()
 
+// Bind variables
 const email = ref('')
 const password = ref('')
+
+// Received from API
 const received = ref(Object)
 
 async function loginAction() {
@@ -14,7 +20,7 @@ async function loginAction() {
     }
 
     try {
-        const response = await fetch(`http://localhost:5093/api/auth/login`, {
+        const response = await fetch(`${authUrl}/login`, {
             method: "POST",
             body: JSON.stringify(params),
             headers: {
@@ -26,7 +32,7 @@ async function loginAction() {
         if(response.ok) {
             userStore.getLoginStatus(true)
             userStore.getUsername(received.value.username)
-            router.push('/')
+            router.push({name: 'home'})
         }
         else {
             userStore.getLoginStatus(false)
