@@ -1,9 +1,9 @@
 <script setup>
-import { inject, onBeforeMount, onMounted, ref } from 'vue';
+import { onBeforeMount, onMounted, ref } from 'vue';
 import { useUserStore } from '@/stores/userStore'
+import { profileUrl } from '@/assets/contents/apiUrls.js'
 import router from '@/router';
 
-const apiUrl = inject('apiUrl')
 const userStore = useUserStore()
 
 const username = ref("")
@@ -18,9 +18,8 @@ onMounted(getProfile)
 
 async function getProfile() {
     try{
-        const response = await fetch(`${apiUrl}/api/profile/getProfile?username=${userStore.username}`, {
+        const response = await fetch(`${profileUrl}/getProfile`, {
             method: "GET",
-            credentials: "include"
         })
 
         const data = await response.json()

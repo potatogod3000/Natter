@@ -22,6 +22,7 @@ async function loginAction() {
     try {
         const response = await fetch(`${authUrl}/login`, {
             method: "POST",
+            credentials: 'include',
             body: JSON.stringify(params),
             headers: {
                 "Content-Type": "application/json"
