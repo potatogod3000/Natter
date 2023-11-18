@@ -44,8 +44,8 @@ public static class ServicesConfiguration {
                 RequireExpirationTime = true,
                 ClockSkew = TimeSpan.FromSeconds(5)
             };
-        });
-        /* .AddCookie(options => {
+                });
+/* .AddCookie(options => {
             options.Cookie.Name = "JWT-Access-Token";
         }); */
         
@@ -55,7 +55,7 @@ public static class ServicesConfiguration {
     public static IServiceCollection AddCorsPolicy(this IServiceCollection services) {
         services.AddCors(options => {
             options.AddPolicy("Frontend", policy => {
-                policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                policy.WithOrigins("https://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
             });
         });
 
