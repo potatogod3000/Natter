@@ -23,24 +23,6 @@ public static class ServicesConfiguration {
     public static IServiceCollection AddCombinedAuth(this IServiceCollection services, IConfiguration configuration) {
         
         services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        /* .AddJwtBearer(options => {
-            var key = Encoding.UTF8.GetBytes(configuration.GetSection("JwtConfig:Key").Value!);
-            options.SaveToken = true;
-
-            options.TokenValidationParameters = new() {
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidIssuer = configuration.GetSection("JwtConfig:Issuer").Value,
-                ValidAudience = configuration.GetSection("JwtConfig:Audience").Value,
-                ValidateLifetime = true,
-                ValidateActor = true,
-                ValidateIssuerSigningKey = true,
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                RequireExpirationTime = true,
-                ClockSkew = TimeSpan.FromSeconds(5)
-            };
-        }) */
-          
         .AddCookie(options => {
             options.Cookie.Name = "NatterCookieAuth";
             options.SlidingExpiration = true;
