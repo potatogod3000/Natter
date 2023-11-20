@@ -1,7 +1,5 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using NatterApi.Abstractions;
 using NatterApi.Data;
 using NatterApi.Models;
@@ -24,11 +22,8 @@ public static class ServicesConfiguration {
 
     public static IServiceCollection AddCombinedAuth(this IServiceCollection services, IConfiguration configuration) {
         
-        services.AddAuthentication(options => {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        })
-        .AddJwtBearer(options => {
+        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        /* .AddJwtBearer(options => {
             var key = Encoding.UTF8.GetBytes(configuration.GetSection("JwtConfig:Key").Value!);
             options.SaveToken = true;
 
@@ -44,10 +39,11 @@ public static class ServicesConfiguration {
                 RequireExpirationTime = true,
                 ClockSkew = TimeSpan.FromSeconds(5)
             };
+        }) */
+        .AddCookie(options => {
+            options.Cookie.Name = "NatterCookieAuth";
+            options.SlidingExpiration = true;
         });
-        /* .AddCookie(options => {
-            options.Cookie.Name = "JWT-Access-Token";
-        }); */
         
         return services;
     }
@@ -66,7 +62,7 @@ public static class ServicesConfiguration {
         
         services.Configure<JwtConfiguration>(configuration.GetSection("JwtConfig"));
         services.AddScoped<IServerHandler, ServerHandler>();
-        services.AddScoped<IJwtHandler, JwtHandler>();
+        services.AddScoped<ICookieHandler, CookieHandler>();
         
         return services;
     }
