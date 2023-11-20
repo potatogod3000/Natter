@@ -27,7 +27,10 @@ coverage
 *.sln
 *.sw?
 
-
-# Certificates
-*.crt
+# Cert files
 *.pem
+*.crt
+
+# Cert files
+*.pem
+*.crt
