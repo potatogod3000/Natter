@@ -3,6 +3,9 @@ using NatterApi.Abstractions;
 using NatterApi.Models.DTOs;
 using NatterApi.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NatterApi.Controllers;
 
@@ -10,12 +13,14 @@ namespace NatterApi.Controllers;
 [Route("api/auth")]
 public class Auth : ControllerBase {
     
+    private readonly ICookieHandler _cookieHandler;
     private readonly UserManager<NatterUser> _userManager;
-    private readonly IJwtHandler _jwtHandler;
+    // private readonly IJwtHandler _jwtHandler;
     
-    public Auth(UserManager<NatterUser> userManager, IJwtHandler jwtHandler) {
+    public Auth(UserManager<NatterUser> userManager, ICookieHandler cookieHandler /*, IJwtHandler jwtHandler */) {
+        _cookieHandler = cookieHandler;
         _userManager = userManager;
-        _jwtHandler = jwtHandler;
+        // _jwtHandler = jwtHandler;
     }
 
     [HttpPost("register")]
@@ -57,27 +62,8 @@ public class Auth : ControllerBase {
             if(!passwordCheck) {
                 return BadRequest(new { message = "Email or Password is incorrect" });
             }
-            
-            var jwt = await _jwtHandler.CreateTokenAsync(user);
-            user.RefreshToken = Guid.NewGuid().ToString();
 
-            Response.Cookies.Append("X-Access-Token", jwt, new CookieOptions() {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None
-            });
-
-            Response.Cookies.Append("X-Username", user.UserName, new CookieOptions() {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None
-            });
-
-            Response.Cookies.Append("X-Refresh-Token", user.RefreshToken, new CookieOptions() {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None
-            });
+            await _cookieHandler.Create(user, HttpContext);            
 
             return Ok(new { message = "Login succeeded!", username = user.UserName });
         }
@@ -100,17 +86,9 @@ public class Auth : ControllerBase {
     }
 
     [HttpPost("logout")]
-    public IActionResult Logout() {
-        var jwtString = Request.Cookies["token"];
-        
-        if(jwtString != null) {
-            var verifiedToken = _jwtHandler.VerifyToken(jwtString);
-            int userId = int.Parse(verifiedToken.Subject);
-            Response.Cookies.Delete("token");
+    public async Task<IActionResult> Logout() {
+        await HttpContext.SignOutAsync("natter");
 
-            return Ok(new { message = "Logged out" });
-        }
-
-        return BadRequest( new { message = "Token error" });
+        return Ok( new { message = "Logged out!" });
     }
 }

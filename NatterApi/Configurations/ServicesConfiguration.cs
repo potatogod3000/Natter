@@ -1,7 +1,5 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using NatterApi.Abstractions;
 using NatterApi.Data;
 using NatterApi.Models;
@@ -22,32 +20,18 @@ public static class ServicesConfiguration {
         return services;
     }
 
-    public static IServiceCollection AddCombinedAuth(this IServiceCollection services, IConfiguration configuration) {
+    public static IServiceCollection AddCookieAuth(this IServiceCollection services) {
         
         services.AddAuthentication(options => {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
         })
-        .AddJwtBearer(options => {
-            var key = Encoding.UTF8.GetBytes(configuration.GetSection("JwtConfig:Key").Value!);
-            options.SaveToken = true;
-
-            options.TokenValidationParameters = new() {
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidIssuer = configuration.GetSection("JwtConfig:Issuer").Value,
-                ValidAudience = configuration.GetSection("JwtConfig:Audience").Value,
-                ValidateLifetime = true,
-                ValidateActor = true,
-                ValidateIssuerSigningKey = true,
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                RequireExpirationTime = true,
-                ClockSkew = TimeSpan.FromSeconds(5)
-            };
-                });
-/* .AddCookie(options => {
-            options.Cookie.Name = "JWT-Access-Token";
-        }); */
+        .AddCookie(options => {
+            options.Cookie.Name = "NatterCookieAuth";
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+            options.SlidingExpiration = true;
+        });
         
         return services;
     }
@@ -55,7 +39,7 @@ public static class ServicesConfiguration {
     public static IServiceCollection AddCorsPolicy(this IServiceCollection services) {
         services.AddCors(options => {
             options.AddPolicy("Frontend", policy => {
-                policy.WithOrigins("https://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                policy.WithOrigins("https://localhost:3000", "http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
             });
         });
 
@@ -66,7 +50,7 @@ public static class ServicesConfiguration {
         
         services.Configure<JwtConfiguration>(configuration.GetSection("JwtConfig"));
         services.AddScoped<IServerHandler, ServerHandler>();
-        services.AddScoped<IJwtHandler, JwtHandler>();
+        services.AddScoped<ICookieHandler, CookieHandler>();
         
         return services;
     }

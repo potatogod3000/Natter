@@ -30,3 +30,7 @@ coverage
 # Cert files
 *.pem
 *.crt
+
+# Cert files
+*.pem
+*.crt
