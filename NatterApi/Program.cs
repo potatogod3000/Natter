@@ -11,7 +11,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<NatterDbContext>(options => options.UseNpgsql(DatabaseConnection));
 builder.Services.AddIdentity();
-builder.Services.AddCombinedAuth(config);
+builder.Services.AddCookieAuth();
 builder.Services.AddCorsPolicy();
 
 builder.Services.AddDependencies(config);

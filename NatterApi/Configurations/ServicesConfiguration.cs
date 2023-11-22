@@ -20,11 +20,16 @@ public static class ServicesConfiguration {
         return services;
     }
 
-    public static IServiceCollection AddCombinedAuth(this IServiceCollection services, IConfiguration configuration) {
+    public static IServiceCollection AddCookieAuth(this IServiceCollection services) {
         
-        services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        services.AddAuthentication(options => {
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        })
         .AddCookie(options => {
             options.Cookie.Name = "NatterCookieAuth";
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
             options.SlidingExpiration = true;
         });
         
@@ -34,7 +39,7 @@ public static class ServicesConfiguration {
     public static IServiceCollection AddCorsPolicy(this IServiceCollection services) {
         services.AddCors(options => {
             options.AddPolicy("Frontend", policy => {
-                policy.WithOrigins("https://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                policy.WithOrigins("https://localhost:3000", "http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
             });
         });
 
