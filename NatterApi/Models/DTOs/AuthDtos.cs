@@ -18,12 +18,12 @@ public class RegisterDto {
     public string Email { get; set; }
 
     [Required]
-    public string Username { get; set; }
+    public string UserName { get; set; }
 
     [Required]
     public string Password { get; set; }
 
     public string Country { get; set; }
 
-    public int PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; }
 }
