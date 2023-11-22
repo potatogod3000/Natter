@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using NatterApi.Abstractions;
+using NatterApi.Models;
 
 namespace NatterApi.Controllers;
 
@@ -9,20 +10,45 @@ namespace NatterApi.Controllers;
 [Route("api/profile")]
 public class Profile: Controller {
 
-    private readonly IUserRepository _userRepository;
+    private readonly UserManager<NatterUser> _userManager;
 
-    public Profile(IUserRepository userRepository) {
-        _userRepository = userRepository;
+    public Profile(UserManager<NatterUser> userManager) {
+        _userManager = userManager;
     }
 
     [HttpGet("getProfile")]
-    public async Task<IActionResult> GetProfile(string username) {
-        var userProfile = await _userRepository.GetByUsername(username);
+    public async Task<IActionResult> GetProfile(string? username = null) {
+        bool currentUser = false;
         
-        if(userProfile == null) {
-            return BadRequest( new {message = $"No user found with the name {username}"} );
+        if(username == null) {
+            username = User.Identity.Name;
+            currentUser = true;
         }
 
-        return Json(userProfile);
+        var user = await _userManager.FindByNameAsync(username);
+        
+        if(user == null) {
+            return BadRequest( new {message = $"No user found with the name {username}"} );
+        }
+        else if(username == null) {
+            return BadRequest(new { message = "Received data error: username is null" });
+        }
+
+        if(currentUser) {
+            return Ok(new {
+                user.UserName,
+                user.Email,
+                user.PhoneNumber,
+                user.Country,
+                user.ServersJoined
+            });
+        }
+        else {
+            return Ok(new {
+                user.UserName,
+                user.Country,
+                user.ServersJoined
+            });
+        }
     }
 }
