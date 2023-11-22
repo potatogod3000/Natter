@@ -47,8 +47,6 @@ public static class ServicesConfiguration {
     }
 
     public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration) {
-        
-        services.Configure<JwtConfiguration>(configuration.GetSection("JwtConfig"));
         services.AddScoped<IServerHandler, ServerHandler>();
         services.AddScoped<ICookieHandler, CookieHandler>();
         

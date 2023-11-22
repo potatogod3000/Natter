@@ -15,12 +15,10 @@ public class Auth : ControllerBase {
     
     private readonly ICookieHandler _cookieHandler;
     private readonly UserManager<NatterUser> _userManager;
-    // private readonly IJwtHandler _jwtHandler;
     
-    public Auth(UserManager<NatterUser> userManager, ICookieHandler cookieHandler /*, IJwtHandler jwtHandler */) {
+    public Auth(UserManager<NatterUser> userManager, ICookieHandler cookieHandler) {
         _cookieHandler = cookieHandler;
         _userManager = userManager;
-        // _jwtHandler = jwtHandler;
     }
 
     [HttpPost("register")]
