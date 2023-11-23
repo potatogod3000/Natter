@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NatterApi.Models;
+using NatterApi.Models.DTOs;
 
 namespace NatterApi.Controllers;
 
@@ -49,6 +50,36 @@ public class Profile: Controller {
                 user.Country,
                 user.ServersJoined
             });
+        }
+    }
+
+    [HttpPost("updateUser")]
+    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto updateDetails) {
+        var user = await _userManager.FindByEmailAsync(updateDetails.Email);
+
+        user.UserName = updateDetails.UserName;
+        user.Country = updateDetails.Country;
+        user.PhoneNumber = updateDetails.PhoneNumber;
+
+        var userUpdated = await _userManager.UpdateAsync(user);
+
+        if(userUpdated.Succeeded) {
+            return Ok( new { message = "Updated user details!" } );
+        }
+
+        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Something went wrong when updating user details!" });
+    }
+
+    [HttpPost("updatePassword")]
+    public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto updateDetails) {
+        var user = await _userManager.FindByNameAsync(User.Identity.Name);
+        var passwordChanged = _userManager.ChangePasswordAsync(user,updateDetails.CurrentPassword, updateDetails.NewPassword);
+
+        if(passwordChanged.Result.Succeeded) {
+            return Ok( new { message = "Password updated! Proceed to Login" } );
+        }
+        else {
+            return BadRequest(new { message = passwordChanged.Result.Errors } );
         }
     }
 }
