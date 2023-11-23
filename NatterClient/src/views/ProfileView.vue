@@ -1,47 +1,48 @@
+<template>
+    <div class="container dark:text-light pt-20 text-dark">
+        <UpdateUser :userInfo="userInfo" />
+        <UpdatePassword :email="userInfo.email" />
+    </div>
+</template>
+
 <script setup>
-import { onBeforeMount, onMounted, ref } from 'vue';
+import { onBeforeMount, reactive } from 'vue';
 import { useUserStore } from '@/stores/userStore'
-import { profileUrl } from '@/assets/contents/apiUrls.js'
 import router from '@/router';
+import { profileUrl } from '@/assets/contents/apiUrls.js'
+import UpdateUser from '../components/profile/UpdateUser.vue';
+import UpdatePassword from '../components/profile/UpdatePassword.vue';
 
 const userStore = useUserStore()
 
-const username = ref("")
-const country = ref("")
-
-onBeforeMount(() => {
-    if(!userStore.isLoggedIn) {
-        router.push({name: 'auth'})
-    }
+const userInfo = reactive({
+    email: "",
+    username: "",
+    country: "",
+    phoneNumber: ""
 })
-onMounted(getProfile)
 
-async function getProfile() {
-    try{
+// Get Current User Profile Info before mount lifecycle
+onBeforeMount(async () => {
+    try {
         const response = await fetch(`${profileUrl}/getProfile`, {
             method: "GET",
+            credentials: "include"
         })
 
-        const data = await response.json()
-
-        if(response.ok || response.status === 200) {
-            username.value = data.userName
-            country.value = data.country
+        if (response.ok || response.status === 200) {
+            const data = await response.json()
+            userInfo.username = data.userName
+            userInfo.email = data.email
+            userInfo.country = data.country
+            userInfo.phoneNumber = data.phoneNumber
         }
         else {
-            const err = new Error()
-            err.message = data.message
-            throw err
+            router.push({name: "auth"})
         }
     }
-    catch(err) {
+    catch (err) {
         console.log(err)
     }
-}
-
+})
 </script>
-
-<template>
-    <div class="pt-20">Username: {{ username }}</div>
-    <div>Country: {{ country }}</div>
-</template>
