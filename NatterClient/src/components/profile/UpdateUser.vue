@@ -4,30 +4,43 @@
         <div v-text="userInfo.email"></div>
 
         <label for="usernameField">Username</label>
-        <input type="text" v-model="userInfo.username" id="usernameField" />
+        <input type="text" v-model="userInfo.username" id="usernameField" class="input" />
 
         <label for="countryField">Country</label>
-        <select v-model="userInfo.country" class="dark:text-dark text-light">
+        <select v-model="userInfo.country" class="input">
             <option value="" :selected='userInfo.country === "" ? true : false' disabled>Please select a country</option>
             <option
-                :value="countryInfo.cca2"
                 v-for="countryInfo in countries"
+                :value="countryInfo.cca2"
                 :key="countryInfo.cca2"
             >
-                {{countryInfo.flag }} {{ countryInfo.name.common }}</option>
+                {{countryInfo.flag }} {{ countryInfo.name.common }}
+            </option>
         </select>
 
         <label for="phoneNumberField">Phone Number</label>
-        <input type="text" v-model="phoneNumberAreaCode" />
-        <input type="text" pattern="[0-9][+,-, ]" v-model="userInfo.phoneNumber" id="phoneNumberField" />
+        <div class="flex gap-4">
+            <select class="w-32 input text-center" v-model="phoneNumberAreaCodeSelected">
+                <option value="null">Calling Code</option>
+                <option
+                    v-for="(code, index) in phoneNumberAreaCodes"
+                    :value="code"
+                    :key="index"
+                >
+                    {{ code }}
+                </option>
+            </select>
+            <input type="text" pattern="[0-9][+,-, ]" v-model="userInfo.phoneNumber" id="phoneNumberField" class="input w-full" />
+        </div>
 
         <button type="button" @click="submitChanges">Update</button>
     </form>
 </template>
 
 <script setup>
-import { onBeforeMount, reactive, ref } from 'vue';
-import { profileUrl } from '@/assets/contents/apiUrls.js'
+import { computed, onBeforeMount, reactive, ref } from 'vue';
+import { profileUrl } from '@/scripts/apiUrls.js';
+import { getCountries, getAreaCodes } from '@/scripts/countryDetails.js';
 
 const props = defineProps({
     userInfo: {
@@ -37,34 +50,24 @@ const props = defineProps({
 })
 
 // Get details (Name, CCA2, Flag and IDD) of all countries in the world before mount
-onBeforeMount(async () => {
-    const response = await fetch("https://restcountries.com/v3.1/all?fields=name,cca2,flag,idd", { method: "GET" })
-    countries.value = await response.json()
-})
+onBeforeMount(async () => { countries.value = await getCountries() })
 
+// Pass props.UserInfo to a reactive userInfo
 const userInfo = reactive(props.userInfo)
 
-const phoneNumberAreaCode = ref("")
-const countries = ref({})
-
-async function getCountryCallingCode(country) {
-    const callingCode = ref("")
-    countries.value.forEach(countryInfo => {
-        if(countryInfo.cca2 === country) {
-            callingCode.value = countryInfo.idd.root
-        }
-    })
-    
-    return callingCode
-}
+const countries = ref([])
+const searchCountriesText = ref("")
+const phoneNumberAreaCodes = computed(() => { return getAreaCodes(countries.value, userInfo.country) })
+const phoneNumberAreaCodeSelected = ref(userInfo.phoneNumberAreaCode)
 
 // Submit function
 async function submitChanges()  {
     const body = {
-        email: userInfo.email,
-        username: userInfo.username,
-        phoneNumber: userInfo.phoneNumber,
-        country: userInfo.country
+        "email": userInfo.email,
+        "username": userInfo.username,
+        "phoneNumber": userInfo.phoneNumber,
+        "phoneNumberAreaCode": phoneNumberAreaCodeSelected,
+        "country": userInfo.country
     }
 
     try {
@@ -86,4 +89,13 @@ async function submitChanges()  {
         console.log(error)
     }
 }
+
+// Search within countries array for a country name
+/* function searchCountries(searchCountriesText) {
+    countries.value.forEach(countryInfo => {
+        if(countryInfo.name.common.contains(searchCountriesText)) {
+            return countryInfo.name.common
+        }
+    })
+} */
 </script>
