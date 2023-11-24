@@ -20,7 +20,7 @@
 
         <label for="phoneNumberField">Phone Number</label>
         <div class="flex gap-4">
-            <select class="w-32 input text-center" v-model="phoneNumberAreaCodeSelected">
+            <select class="w-32 input text-center" v-model="userInfo.phoneNumberAreaCode">
                 <option value="null">Calling Code</option>
                 <option
                     v-for="(code, index) in phoneNumberAreaCodes"
@@ -58,7 +58,6 @@ const userInfo = reactive(props.userInfo)
 const countries = ref([])
 const searchCountriesText = ref("")
 const phoneNumberAreaCodes = computed(() => { return getAreaCodes(countries.value, userInfo.country) })
-const phoneNumberAreaCodeSelected = ref(userInfo.phoneNumberAreaCode)
 
 // Submit function
 async function submitChanges()  {
@@ -66,7 +65,7 @@ async function submitChanges()  {
         "email": userInfo.email,
         "username": userInfo.username,
         "phoneNumber": userInfo.phoneNumber,
-        "phoneNumberAreaCode": phoneNumberAreaCodeSelected,
+        "phoneNumberAreaCode": userInfo.phoneNumberAreaCode,
         "country": userInfo.country
     }
 
