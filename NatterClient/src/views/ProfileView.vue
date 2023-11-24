@@ -2,6 +2,7 @@
     <div class="container dark:text-light pt-20 text-dark">
         <UpdateUser :userInfo="userInfo" />
         <UpdatePassword :email="userInfo.email" />
+        <DeleteUser :email="userInfo.email" />
     </div>
 </template>
 
@@ -12,6 +13,7 @@ import router from '@/router';
 import { profileUrl } from '@/assets/contents/apiUrls.js'
 import UpdateUser from '../components/profile/UpdateUser.vue';
 import UpdatePassword from '../components/profile/UpdatePassword.vue';
+import DeleteUser from '../components/profile/DeleteUser.vue';
 
 const userStore = useUserStore()
 

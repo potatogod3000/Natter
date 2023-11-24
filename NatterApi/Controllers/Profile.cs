@@ -82,4 +82,23 @@ public class Profile: Controller {
             return BadRequest(new { message = passwordChanged.Result.Errors } );
         }
     }
+
+    [HttpPost("deleteUser")]
+    public async Task<IActionResult> DeleteAction([FromBody] DeleteUserDto deleteUser) {
+        var user = await _userManager.FindByEmailAsync(deleteUser.Email);
+        var verification = await _userManager.CheckPasswordAsync(user, deleteUser.CurrentPassword);
+
+        if(verification) {
+            var deletion = await _userManager.DeleteAsync(user);
+
+            if(deletion.Succeeded) {
+                return Ok(new { message = $"The user {user.UserName} has been deleted!"});
+            }
+            else {
+                BadRequest(new { message = deletion.Errors });
+            }
+        }
+        
+        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Server Error!"});
+    }
 }
