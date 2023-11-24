@@ -10,7 +10,7 @@
 import { onBeforeMount, reactive } from 'vue';
 import { useUserStore } from '@/stores/userStore'
 import router from '@/router';
-import { profileUrl } from '@/assets/contents/apiUrls.js'
+import { profileUrl } from '@/scripts/apiUrls.js'
 import UpdateUser from '../components/profile/UpdateUser.vue';
 import UpdatePassword from '../components/profile/UpdatePassword.vue';
 import DeleteUser from '../components/profile/DeleteUser.vue';
@@ -18,10 +18,11 @@ import DeleteUser from '../components/profile/DeleteUser.vue';
 const userStore = useUserStore()
 
 const userInfo = reactive({
-    email: "",
-    username: "",
-    country: "",
-    phoneNumber: ""
+    email: null,
+    username: null,
+    country: null,
+    phoneNumber: null,
+    phoneNumberAreaCode: null
 })
 
 // Get Current User Profile Info before mount lifecycle
@@ -38,6 +39,7 @@ onBeforeMount(async () => {
             userInfo.email = data.email
             userInfo.country = data.country
             userInfo.phoneNumber = data.phoneNumber
+            userInfo.phoneNumberAreaCode = data.phoneNumberAreaCode
         }
         else {
             router.push({name: "auth"})
