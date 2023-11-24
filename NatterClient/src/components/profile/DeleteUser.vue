@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { profileUrl } from '@/assets/contents/apiUrls.js'
+import { profileUrl } from '@/scripts/apiUrls.js'
 
 const props = defineProps({
     email: {

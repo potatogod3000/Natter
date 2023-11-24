@@ -15,7 +15,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import { profileUrl } from '@/assets/contents/apiUrls.js'
+import { profileUrl } from '@/scripts/apiUrls.js'
 
 const props = defineProps({
     email: {
