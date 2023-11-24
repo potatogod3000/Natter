@@ -40,6 +40,7 @@ public class Profile: Controller {
                 user.UserName,
                 user.Email,
                 user.PhoneNumber,
+                user.PhoneNumberAreaCode,
                 user.Country,
                 user.ServersJoined
             });
@@ -60,6 +61,7 @@ public class Profile: Controller {
         user.UserName = updateDetails.UserName;
         user.Country = updateDetails.Country;
         user.PhoneNumber = updateDetails.PhoneNumber;
+        user.PhoneNumberAreaCode = updateDetails.PhoneNumberAreaCode;
 
         var userUpdated = await _userManager.UpdateAsync(user);
 

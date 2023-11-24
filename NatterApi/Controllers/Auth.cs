@@ -30,6 +30,7 @@ public class Auth : ControllerBase {
                 Email = registerRequest.Email,
                 Country = registerRequest.Country,
                 PhoneNumber = registerRequest.PhoneNumber,
+                PhoneNumberAreaCode = registerRequest.PhoneNumberAreaCode
             };
 
             var createdUser = await _userManager.CreateAsync(newUser, registerRequest.Password);
