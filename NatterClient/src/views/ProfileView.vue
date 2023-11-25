@@ -18,17 +18,17 @@ import DeleteUser from '../components/profile/DeleteUser.vue';
 const userStore = useUserStore()
 
 const userInfo = reactive({
-    email: null,
-    username: null,
-    country: null,
-    phoneNumber: null,
-    phoneNumberAreaCode: null
+    email: "",
+    username: "",
+    country: "",
+    phoneNumber: "",
+    phoneNumberAreaCode: ""
 })
 
 // Get Current User Profile Info before mount lifecycle
 onBeforeMount(async () => {
     try {
-        const response = await fetch(`${profileUrl}/getProfile`, {
+        const response = await fetch(`${profileUrl}/get-profile`, {
             method: "GET",
             credentials: "include"
         })
