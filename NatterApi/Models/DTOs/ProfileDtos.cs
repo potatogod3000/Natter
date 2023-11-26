@@ -10,6 +10,9 @@ public class UpdateUserDto {
     [Required]
     public string UserName { get; set; }
 
+    [Required]
+    public string Password { get; set; }
+
     public string Country { get; set; }
 
     public string PhoneNumber { get; set; }

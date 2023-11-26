@@ -17,7 +17,7 @@ public class Profile: Controller {
         _userManager = userManager;
     }
 
-    [HttpGet("getProfile")]
+    [HttpGet("get-profile")]
     public async Task<IActionResult> GetProfile(string? username = null) {
         bool currentUser = false;
         
@@ -54,28 +54,31 @@ public class Profile: Controller {
         }
     }
 
-    [HttpPost("updateUser")]
+    [HttpPost("update-user")]
     public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto updateDetails) {
         var user = await _userManager.FindByEmailAsync(updateDetails.Email);
+        var verification = await _userManager.CheckPasswordAsync(user, updateDetails.Password);
+        
+        if(verification) {
+            user.UserName = updateDetails.UserName;
+            user.Country = updateDetails.Country;
+            user.PhoneNumber = updateDetails.PhoneNumber;
+            user.PhoneNumberAreaCode = updateDetails.PhoneNumberAreaCode;
 
-        user.UserName = updateDetails.UserName;
-        user.Country = updateDetails.Country;
-        user.PhoneNumber = updateDetails.PhoneNumber;
-        user.PhoneNumberAreaCode = updateDetails.PhoneNumberAreaCode;
+            var userUpdated = await _userManager.UpdateAsync(user);
 
-        var userUpdated = await _userManager.UpdateAsync(user);
-
-        if(userUpdated.Succeeded) {
-            return Ok( new { message = "Updated user details!" } );
+            if(userUpdated.Succeeded) {
+                return Ok( new { message = "Updated user details!" } );
+            }
         }
 
-        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Something went wrong when updating user details!" });
+        return BadRequest( new { message = "Password verification failed!" });
     }
 
-    [HttpPost("updatePassword")]
+    [HttpPost("update-password")]
     public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto updateDetails) {
         var user = await _userManager.FindByNameAsync(User.Identity.Name);
-        var passwordChanged = _userManager.ChangePasswordAsync(user,updateDetails.CurrentPassword, updateDetails.NewPassword);
+        var passwordChanged = _userManager.ChangePasswordAsync(user, updateDetails.CurrentPassword, updateDetails.NewPassword);
 
         if(passwordChanged.Result.Succeeded) {
             return Ok( new { message = "Password updated! Proceed to Login" } );
