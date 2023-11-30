@@ -1,22 +1,14 @@
 <template>
     <div class="container dark:text-light pt-20 text-dark">
-        <div class="form-card p-4">
-            <div class="flex gap-3 justify-center">
-                <h1 class="text-2xl">{{ userInfo.username }}'s Profile</h1>
-                <PencilIcon class="w-3 cursor-pointer" title="Edit" />
+        <div class="grid grid-cols-3 gap-x-4">
+            <div class="col-span-2">
+                <UserMessages />
             </div>
-
             <div>
-                <img :src="userInfo.profileImageSrc" width="32" />
+                <Info :userInfo="userInfo" />
             </div>
-
-            <div>{{ userInfo.email }}</div>
-
-            <div>{{ userInfo.username }}, {{ userInfo.country }}</div>
-
-            <div>{{ userInfo.phoneNumberAreaCode }} {{ userInfo.phoneNumber }}</div>
-            
         </div>
+
         <UpdateUser :userInfo="userInfo" />
         <UpdatePassword :email="userInfo.email" />
         <DeleteUser :email="userInfo.email" />
@@ -26,12 +18,13 @@
 <script setup>
 import { onBeforeMount, reactive } from 'vue';
 import { useUserStore } from '@/stores/userStore'
-import { PencilIcon } from '@heroicons/vue/24/solid'
 import router from '@/router';
 import { profileUrl } from '@/scripts/apiUrls.js'
+import Info from '../components/profile/Info.vue';
 import UpdateUser from '../components/profile/UpdateUser.vue';
 import UpdatePassword from '../components/profile/UpdatePassword.vue';
 import DeleteUser from '../components/profile/DeleteUser.vue';
+import UserMessages from '../components/profile/UserMessages.vue';
 
 const userStore = useUserStore()
 
@@ -41,7 +34,8 @@ const userInfo = reactive({
     username: "",
     country: "",
     phoneNumber: "",
-    phoneNumberAreaCode: ""
+    phoneNumberAreaCode: "",
+    serversJoined: []
 })
 
 // Get Current User Profile Info before mount lifecycle
@@ -59,6 +53,7 @@ onBeforeMount(async () => {
             userInfo.country = data.country
             userInfo.phoneNumber = data.phoneNumber
             userInfo.phoneNumberAreaCode = data.phoneNumberAreaCode
+            userInfo.serversJoined = data.serversJoined
         }
         else {
             router.push({name: "auth"})
