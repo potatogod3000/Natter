@@ -1,6 +1,6 @@
 <template>
     <div class="form-card">
-        
+
         <h1 class="text-xl pt-4 flex justify-center">Update Profile</h1>
 
         <form @submit.prevent class="flex flex-col pt-2 px-4 pb-4 gap-4">
@@ -17,13 +17,10 @@
             <div class="flex flex-col">
                 <label>Country</label>
                 <select v-model="userInfo.country" class="input">
-                    <option value="" :selected='userInfo.country === "" ? true : false' disabled>Please select a country</option>
-                    <option
-                        v-for="countryInfo in countries"
-                        :value="countryInfo.cca2"
-                        :key="countryInfo.cca2"
-                    >
-                        {{countryInfo.flag }} {{ countryInfo.name.common }}
+                    <option value="" :selected='userInfo.country === "" ? true : false' disabled>Please select a country
+                    </option>
+                    <option v-for="countryInfo in countries" :value="countryInfo.cca2" :key="countryInfo.cca2">
+                        {{ countryInfo.flag }} {{ countryInfo.name.common }}
                     </option>
                 </select>
             </div>
@@ -33,30 +30,24 @@
                 <div class="flex gap-4">
                     <select class="w-32 input text-center" v-model="userInfo.phoneNumberAreaCode">
                         <option value="">Select Code</option>
-                        <option
-                            v-for="(code, index) in phoneNumberAreaCodes"
-                            :value="code"
-                            :key="index"
-                        >
+                        <option v-for="(code, index) in phoneNumberAreaCodes" :value="code" :key="index">
                             {{ code }}
                         </option>
                     </select>
-                    <input type="text" pattern="[0-9][+,-, ]" v-model="userInfo.phoneNumber" class="input w-full" placeholder="Phone Number" />
+                    <input type="text" pattern="[0-9][+,-, ]" v-model="userInfo.phoneNumber" class="input w-full"
+                        placeholder="Phone Number" />
                 </div>
             </div>
-            
+
             <div class="flex flex-col">
                 <label>Password</label>
-                <input type="password" v-model="password" class="input" placeholder="Type Your Password to Confirm Changes" />
+                <input type="password" v-model="password" class="input"
+                    placeholder="Type Your Password to Confirm Changes" />
             </div>
 
             <div class="flex justify-center">
-                <button
-                    type="button"
-                    @click="submitChanges"
-                    class="border py-2 px-4"
-                    :disabled="password === '' ? true : false"
-                >Update</button>
+                <button type="button" @click="submitChanges" class="border py-2 px-4"
+                    :disabled="password === '' ? true : false">Update</button>
             </div>
         </form>
     </div>
@@ -86,7 +77,7 @@ const phoneNumberAreaCodes = computed(() => { return getAreaCodes(countries.valu
 const password = ref("")
 
 // Submit function
-async function submitChanges()  {
+async function submitChanges() {
     const body = {
         "email": userInfo.email,
         "username": userInfo.username,
@@ -107,11 +98,11 @@ async function submitChanges()  {
         })
         const data = await response.json()
 
-        if(response.ok) {
+        if (response.ok) {
             console.log(data)
         }
     }
-    catch(error) {
+    catch (error) {
         console.log(error)
     }
 }

@@ -2,9 +2,10 @@
     <div class="form-card">
 
         <div>
-            <img src="/images/placeholder-user-bg.jpg" class="rounded-lg h-[150px] w-full" />
+            <img src="/images/placeholder-user-bg.jpg" class="rounded-lg h-[350px] w-full" />
             <div class="text-center">
-                <p class="inline-block px-6 py-4 text-4xl font-extrabold rounded-full bg-accent -translate-y-8 border shadow-lg">
+                <p
+                    class="inline-block px-6 py-4 text-4xl font-extrabold rounded-full bg-accent -translate-y-8 border shadow-lg">
                     {{ firstLetter }}
                 </p>
             </div>
@@ -25,16 +26,16 @@
 
             <div>{{ props.userInfo.phoneNumberAreaCode }} {{ props.userInfo.phoneNumber }}</div>
         </div>
-        
+
     </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 
-const props = defineProps({ userInfo: Object }) 
+const props = defineProps({ userInfo: Object })
 const firstLetter = computed(() => {
-    if(props.userInfo.username) {
+    if (props.userInfo.username) {
         return props.userInfo.username[0]
     }
     else {

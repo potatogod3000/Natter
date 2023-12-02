@@ -1,22 +1,43 @@
 <template>
     <div class="container dark:text-light pt-20 text-dark">
-        <div class="grid grid-cols-3 gap-x-4">
-            <div class="col-span-2">
-                <UserMessages />
-            </div>
-            <div>
+
+        <!-- Profile Nav -->
+        <ul class="flex gap-8 mb-10 text-lg font-bold">
+            <li class="cursor-pointer" @click="toggleInfo"
+                :class="[{ 'text-accent': info }, 'hover:text-accent-light transition-all duration-150']">Profile
+                Info</li>
+
+            <li class="cursor-pointer" @click="toggleActivity"
+                :class="[{ 'text-accent': activity }, 'hover:text-accent-light transition-all duration-150']">My
+                Activity</li>
+
+            <li class="cursor-pointer" @click="toggleUpdate"
+                :class="[{ 'text-accent': updateUser }, 'hover:text-accent-light transition-all duration-150']">Update
+                Account</li>
+        </ul>
+
+        <Transition enter-active-class="transition-all duration-200" enter-from-class="opacity-0 translate-x-10"
+            leave-active-class="transition-all duration-200" leave-to-class="opacity-0 translate-x-10" mode="out-in">
+            <div v-if="info">
                 <Info :userInfo="userInfo" />
             </div>
-        </div>
 
-        <UpdateUser :userInfo="userInfo" />
-        <UpdatePassword :email="userInfo.email" />
-        <DeleteUser :email="userInfo.email" />
+            <div class="col-span-2" v-else-if="activity">
+                <UserActivity />
+            </div>
+
+            <div v-else-if="updateUser">
+                <UpdateUser :userInfo="userInfo" />
+                <UpdatePassword :email="userInfo.email" />
+                <DeleteUser :email="userInfo.email" />
+            </div>
+        </Transition>
+
     </div>
 </template>
 
 <script setup>
-import { onBeforeMount, reactive } from 'vue';
+import { onBeforeMount, reactive, ref } from 'vue';
 import { useUserStore } from '@/stores/userStore'
 import router from '@/router';
 import { profileUrl } from '@/scripts/apiUrls.js'
@@ -24,9 +45,14 @@ import Info from '../components/profile/Info.vue';
 import UpdateUser from '../components/profile/UpdateUser.vue';
 import UpdatePassword from '../components/profile/UpdatePassword.vue';
 import DeleteUser from '../components/profile/DeleteUser.vue';
-import UserMessages from '../components/profile/UserMessages.vue';
+import UserActivity from '../components/profile/UserActivity.vue';
 
 const userStore = useUserStore()
+
+// Display States of various components
+const info = ref(true)
+const activity = ref(false)
+const updateUser = ref(false)
 
 const userInfo = reactive({
     profileImageSrc: "",
@@ -37,6 +63,24 @@ const userInfo = reactive({
     phoneNumberAreaCode: "",
     serversJoined: []
 })
+
+function toggleInfo() {
+    info.value = true
+    activity.value = false
+    updateUser.value = false
+}
+
+function toggleActivity() {
+    info.value = false
+    activity.value = true
+    updateUser.value = false
+}
+
+function toggleUpdate() {
+    info.value = false
+    activity.value = false
+    updateUser.value = true
+}
 
 // Get Current User Profile Info before mount lifecycle
 onBeforeMount(async () => {
@@ -56,7 +100,7 @@ onBeforeMount(async () => {
             userInfo.serversJoined = data.serversJoined
         }
         else {
-            router.push({name: "auth"})
+            router.push({ name: "auth" })
         }
     }
     catch (err) {

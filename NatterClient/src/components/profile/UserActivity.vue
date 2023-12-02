@@ -1,7 +1,7 @@
 <template>
     <div class="form-card p-4">
         <h1 class="text-2xl text-center">Messages</h1>
-        
+
         <div v-if="messages.length === 0 && error === ''">
             <p class="text-center mt-2 text-sm text-gray-500">You haven't sent any message in any server yet.</p>
         </div>
@@ -9,7 +9,7 @@
         <div v-else-if="messages.length === 0 && error !== ''">
             <p class="text-center mt-2 text-sm text-red-500">{{ error }}</p>
         </div>
-        
+
         <div v-else>
             <div v-for="message in messages" :key="message.id">
 
@@ -34,14 +34,14 @@ async function getMessages() {
             credentials: "include"
         })
 
-        if(response.ok || response.status === 200) {
+        if (response.ok || response.status === 200) {
             messages.value = await response.json()
         }
-        else if(response.status >= 400) {
+        else if (response.status >= 400) {
             error.value = await response.text()
         }
     }
-    catch(exc) {
+    catch (exc) {
         error.value = exc.message
     }
 }
