@@ -9,11 +9,8 @@
             </div>
 
             <div class="flex justify-center">
-                <button type="button"
-                    @click="isOpen = true"
-                    class="px-4 py-2 border border-red-500 text-red-500"
-                    :disabled="password === '' ? true : false"
-                >Delete Account</button>
+                <button type="button" @click="isOpen = true" class="px-4 py-2 border border-red-500 text-red-500"
+                    :disabled="password === '' ? true : false">Delete Account</button>
             </div>
         </form>
     </div>
@@ -28,30 +25,27 @@
         <template #body>
             <p class="flex flex-col gap-2">
                 Are you sure you want to delete your account?
-                <div class="flex gap-2 border border-red-500 text-red-500 p-2">
-                    <input type="checkbox" value="true" id="confirmDelete" v-model="confirmDelete" />
-                    <label for="confirmDelete">I confirm that I want to delete the account and all my user data</label>
-                </div>
+            <div class="flex gap-2 border border-red-500 text-red-500 p-2">
+                <input type="checkbox" value="true" id="confirmDelete" v-model="confirmDelete" />
+                <label for="confirmDelete">I confirm that I want to delete the account and all my user data</label>
+            </div>
             </p>
         </template>
 
         <template #button1>
-            <button class=""
-                @click="isOpen = false"
-            >
+            <button class="" @click="isOpen = false">
                 Cancel
             </button>
         </template>
 
         <template #button2>
-            <button class="px-2 py-1 bg-red-500 text-white disabled:border-gray-500 disabled:bg-gray-500 hover:bg-red-500/90 active:bg-red-500/70 rounded-md transition-all duration-200"
-                @click="submitAction" :disabled="!confirmDelete"
-            >
+            <button
+                class="px-2 py-1 bg-red-500 text-white disabled:border-gray-500 disabled:bg-gray-500 hover:bg-red-500/90 active:bg-red-500/70 rounded-md transition-all duration-200"
+                @click="submitAction" :disabled="!confirmDelete">
                 Delete
             </button>
         </template>
     </ModalDialog>
-
 </template>
 
 <script setup>
@@ -73,7 +67,7 @@ const confirmDelete = ref(false)
 
 async function submitAction() {
     isOpen.value = false
-    
+
     const body = {
 
     }
