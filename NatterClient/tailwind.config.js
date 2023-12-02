@@ -12,8 +12,8 @@ module.exports = {
                 "dark-soft": "#333333",
                 light: "#d6ebff",
                 "light-soft": "#f2f9ff",
-                accent: "#3366ff",
-                "accent-light": "#5588ff",
+                accent: "#5588ff",
+                "accent-light": "#77aaff",
             },
             fontFamily: {
                 palanquin: ["Palanquin", "sans-serif"],
