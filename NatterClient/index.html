@@ -7,7 +7,13 @@
     <title>Natter</title>
   </head>
   <body class="dark:bg-dark bg-light">
-    <div id="app" class="min-h-screen relative"></div>
+    <div id="app" class="min-h-screen relative" v-cloak></div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
+
+<style>
+  [v-cloak] {
+    display: none;
+  }
+</style>
