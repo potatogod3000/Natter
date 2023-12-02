@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NatterApi.Models;
+using NatterApi.Models.DTOs;
 
 namespace NatterApi.Controllers;
 
@@ -16,7 +17,7 @@ public class Profile: Controller {
         _userManager = userManager;
     }
 
-    [HttpGet("getProfile")]
+    [HttpGet("get-profile")]
     public async Task<IActionResult> GetProfile(string? username = null) {
         bool currentUser = false;
         
@@ -39,6 +40,7 @@ public class Profile: Controller {
                 user.UserName,
                 user.Email,
                 user.PhoneNumber,
+                user.PhoneNumberAreaCode,
                 user.Country,
                 user.ServersJoined
             });
@@ -50,5 +52,58 @@ public class Profile: Controller {
                 user.ServersJoined
             });
         }
+    }
+
+    [HttpPost("update-user")]
+    public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDto updateDetails) {
+        var user = await _userManager.FindByEmailAsync(updateDetails.Email);
+        var verification = await _userManager.CheckPasswordAsync(user, updateDetails.Password);
+        
+        if(verification) {
+            user.UserName = updateDetails.UserName;
+            user.Country = updateDetails.Country;
+            user.PhoneNumber = updateDetails.PhoneNumber;
+            user.PhoneNumberAreaCode = updateDetails.PhoneNumberAreaCode;
+
+            var userUpdated = await _userManager.UpdateAsync(user);
+
+            if(userUpdated.Succeeded) {
+                return Ok( new { message = "Updated user details!" } );
+            }
+        }
+
+        return BadRequest( new { message = "Password verification failed!" });
+    }
+
+    [HttpPost("update-password")]
+    public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto updateDetails) {
+        var user = await _userManager.FindByNameAsync(User.Identity.Name);
+        var passwordChanged = _userManager.ChangePasswordAsync(user, updateDetails.CurrentPassword, updateDetails.NewPassword);
+
+        if(passwordChanged.Result.Succeeded) {
+            return Ok( new { message = "Password updated! Proceed to Login" } );
+        }
+        else {
+            return BadRequest(new { message = passwordChanged.Result.Errors } );
+        }
+    }
+
+    [HttpPost("deleteUser")]
+    public async Task<IActionResult> DeleteAction([FromBody] DeleteUserDto deleteUser) {
+        var user = await _userManager.FindByEmailAsync(deleteUser.Email);
+        var verification = await _userManager.CheckPasswordAsync(user, deleteUser.CurrentPassword);
+
+        if(verification) {
+            var deletion = await _userManager.DeleteAsync(user);
+
+            if(deletion.Succeeded) {
+                return Ok(new { message = $"The user {user.UserName} has been deleted!"});
+            }
+            else {
+                BadRequest(new { message = deletion.Errors });
+            }
+        }
+        
+        return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Server Error!"});
     }
 }

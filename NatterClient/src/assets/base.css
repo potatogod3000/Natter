@@ -6,6 +6,7 @@
 @tailwind utilities;
 
 * {
+    font-family: 'Montserrat';
     scroll-behavior: smooth;
 }
 
@@ -13,5 +14,13 @@
     .button-hero-accent {
         @apply mt-10 text-lg font-medium px-4 py-2 rounded-md font-montserrat border-2 border-accent text-accent hover:border-accent hover:bg-accent hover:dark:text-light hover:text-dark
         transition-all duration-200
+    }
+
+    .input {
+        @apply text-dark bg-light-soft p-2 rounded-md outline-none border border-accent-light
+    }
+
+    .form-card {
+        @apply dark:bg-dark-soft bg-light-soft rounded-lg shadow-lg my-4
     }
 }

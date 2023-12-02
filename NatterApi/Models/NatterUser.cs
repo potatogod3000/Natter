@@ -16,6 +16,9 @@ public class NatterUser: IdentityUser {
     [JsonIgnore]
     public string PhoneNumber { get; set; }
 
+    [JsonIgnore]
+    public string PhoneNumberAreaCode { get; set; }
+
     public string Country { get; set; }
 
     public List<string> ServersJoined { get; set; }

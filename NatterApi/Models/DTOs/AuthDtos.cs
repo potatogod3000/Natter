@@ -26,4 +26,6 @@ public class RegisterDto {
     public string Country { get; set; }
 
     public string PhoneNumber { get; set; }
+
+    public string PhoneNumberAreaCode { get; set; }
 }
