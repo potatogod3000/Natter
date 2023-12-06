@@ -1,21 +1,30 @@
-<script setup>
-import Login from '../components/auth/Login.vue';
-import Register from '../components/auth/Register.vue';
-</script>
-
 <template>
-    <div class="absolute top-2/4 -translate-y-2/4 w-full">
-        <div class="flex gap-8 items-center justify-center">
-            <button>Login</button>
-            <button>Register</button>
+    <div class="flex h-screen items-center justify-center">
+        <div class="flex items-center justify-center text-dark dark:text-light">
+            <Transition enter-from-class="opacity-0" enter-active-class="transition-all duration-200"
+                leave-to-class="opacity-0" leave-active-class="transition-all duration-200" mode="out-in">
+                <Login v-if="viewLogin" @switchToRegister="switchToRegister" />
+                <Register v-else-if="viewRegister" @switchToLogin="switchToLogin" />
+            </Transition>
         </div>
-
-        <Login />
-        <Register />
     </div>
-
 </template>
 
-<style scoped>
+<script setup>
+import { ref } from 'vue';
+import Login from '../components/auth/Login.vue';
+import Register from '../components/auth/Register.vue';
 
-</style>
+const viewLogin = ref(true)
+const viewRegister = ref(false)
+
+function switchToLogin() {
+    viewLogin.value = !viewLogin.value
+    viewRegister.value = !viewRegister.value
+}
+
+function switchToRegister() {
+    viewRegister.value = !viewRegister.value
+    viewLogin.value = !viewLogin.value
+}
+</script>
