@@ -3,23 +3,40 @@
 
         <!-- Profile Nav -->
         <ul class="flex gap-8 mb-10 text-lg font-bold">
-            <li class="cursor-pointer" @click="toggleInfo"
-                :class="[{ 'text-accent': info }, 'hover:text-accent-light transition-all duration-150']">Profile
-                Info</li>
+            <li>
+                <RouterLink :to="{ name: 'profileInfo' }" active-class="text-accent"
+                    class="hover:text-accent-light transition-all duration-150">Profile
+                    Info</RouterLink>
+            </li>
 
-            <li class="cursor-pointer" @click="toggleActivity"
-                :class="[{ 'text-accent': activity }, 'hover:text-accent-light transition-all duration-150']">My
-                Activity</li>
+            <li>
+                <RouterLink :to="{ name: 'profileActivity' }" active-class="text-accent"
+                    class="hover:text-accent-light transition-all duration-150">My
+                    Activity</RouterLink>
+            </li>
 
-            <li class="cursor-pointer" @click="toggleUpdate"
-                :class="[{ 'text-accent': updateUser }, 'hover:text-accent-light transition-all duration-150']">Update
-                Account</li>
+            <li>
+                <RouterLink :to="{ name: 'updateUser' }" active-class="text-accent"
+                    class="hover:text-accent-light transition-all duration-150">Update
+                    Profile</RouterLink>
+            </li>
+
+            <li>
+                <RouterLink :to="{ name: 'updatePassword' }" active-class="text-accent"
+                    class="hover:text-accent-light transition-all duration-150">Update
+                    Password</RouterLink>
+            </li>
+
+            <li>
+                <RouterLink :to="{ name: 'deleteUser' }" active-class="text-red-600"
+                    class="hover:text-red-400 text-red-500 transition-all duration-150">Delete
+                    Account</RouterLink>
+            </li>
         </ul>
 
-        <Transition enter-active-class="transition-all duration-200" enter-from-class="opacity-0 translate-x-10"
-            leave-active-class="transition-all duration-200" leave-to-class="opacity-0 translate-x-10" mode="out-in">
-            <div v-if="info">
-                <Info :userInfo="userInfo" />
+
+        <!-- <div v-if="info">
+                <Info :userInfo="props.userInfo" />
             </div>
 
             <div class="col-span-2" v-else-if="activity">
@@ -27,25 +44,26 @@
             </div>
 
             <div v-else-if="updateUser">
-                <UpdateUser :userInfo="userInfo" />
-                <UpdatePassword :email="userInfo.email" />
-                <DeleteUser :email="userInfo.email" />
-            </div>
-        </Transition>
+                <UpdateUser :userInfo="props.userInfo" />
+                <UpdatePassword :email="props.userInfo.email" />
+                <DeleteUser :email="props.userInfo.email" />
+            </div> -->
+        <RouterView v-slot="{ Component }">
+            <Transition enter-active-class="transition-all duration-200" enter-from-class="opacity-0 translate-x-10"
+                leave-active-class="transition-all duration-200" leave-to-class="opacity-0 translate-x-10" mode="out-in">
+                <component :is="Component"></component>
+            </Transition>
+        </RouterView>
 
     </div>
 </template>
 
 <script setup>
-import { onBeforeMount, reactive, ref } from 'vue';
+import { ref } from 'vue';
 import { useUserStore } from '@/stores/userStore'
-import router from '@/router';
-import { profileUrl } from '@/scripts/apiUrls.js'
 import Info from '../components/profile/Info.vue';
-import UpdateUser from '../components/profile/UpdateUser.vue';
-import UpdatePassword from '../components/profile/UpdatePassword.vue';
-import DeleteUser from '../components/profile/DeleteUser.vue';
-import UserActivity from '../components/profile/UserActivity.vue';
+import { UpdateUser, UpdatePassword, DeleteUser, UserActivity } from '../components/profile';
+import { RouterLink, RouterView } from 'vue-router';
 
 const userStore = useUserStore()
 
@@ -54,14 +72,11 @@ const info = ref(true)
 const activity = ref(false)
 const updateUser = ref(false)
 
-const userInfo = reactive({
-    profileImageSrc: "",
-    email: "",
-    username: "",
-    country: "",
-    phoneNumber: "",
-    phoneNumberAreaCode: "",
-    serversJoined: []
+const props = defineProps({
+    userInfo: {
+        type: Object,
+        required: true
+    }
 })
 
 function toggleInfo() {
@@ -83,7 +98,7 @@ function toggleUpdate() {
 }
 
 // Get Current User Profile Info before mount lifecycle
-onBeforeMount(async () => {
+/* onBeforeMount(async () => {
     try {
         const response = await fetch(`${profileUrl}/get-profile`, {
             method: "GET",
@@ -100,11 +115,11 @@ onBeforeMount(async () => {
             userInfo.serversJoined = data.serversJoined
         }
         else {
-            router.push({ name: "auth" })
+            console.log(response)
         }
     }
     catch (err) {
         console.log(err)
     }
-})
+}) */
 </script>
