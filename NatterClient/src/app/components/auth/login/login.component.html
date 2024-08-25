@@ -1,0 +1,65 @@
+<div
+    class="form-card border border-accent flex flex-col justify-center items-center px-8"
+>
+    <h1 class="text-3xl pt-4">{{ pageTitle }}</h1>
+
+    <div class="py-4">
+        <form class="flex flex-col gap-4">
+            <div class="flex flex-col">
+                <label>E-Mail</label>
+                <input
+                    type="email"
+                    name="email"
+                    [class]="
+                        loginModel.email === ''
+                            ? 'input border-red-600'
+                            : 'input border-green-600'
+                    "
+                    [(ngModel)]="loginModel.email"
+                />
+            </div>
+
+            <div class="flex flex-col">
+                <label>Password</label>
+                <input
+                    type="password"
+                    name="password"
+                    [class]="
+                        loginModel.password.length <= 8
+                            ? 'input border-red-600'
+                            : 'input border-green-600'
+                    "
+                    [(ngModel)]="loginModel.password"
+                />
+            </div>
+
+            <div class="flex justify-center">
+                <button
+                    type="button"
+                    [disabled]="loginModel.email === '' || loginModel.password === '' ? true : false"
+                    class="px-4 py-2 border"
+                    (click)="loginAction()"
+                >
+                    Submit
+                </button>
+            </div>
+
+            <!-- For "errors" object generated when validation error at backend -->
+            <!-- TODO -->
+
+            <!-- For errors returned from backend due to invalid password/email -->
+            <!-- TODO -->
+        </form>
+
+        <p
+            class="py-4 flex items-center gap-1 cursor-pointer hover:text-accent transition-all duration-150"
+            (click)="switchToRegister()"
+        >
+            Dont have a Natter Account?
+            <span class="flex items-center gap-1">
+                Register
+                <!--ArrowRightIcon class="w-4" /-->
+            </span>
+        </p>
+    </div>
+</div>

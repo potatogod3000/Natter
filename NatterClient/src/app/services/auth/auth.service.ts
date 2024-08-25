@@ -1,7 +1,7 @@
 import { Injectable, signal } from "@angular/core";
-import { initialLoginStatus, LoginStatusModel, LoginModel } from "../../models/auth/login.model";
+import { LoginStatusModel, LoginModel } from "../../models/auth/login.model";
 import { HttpClient } from "@angular/common/http";
-import { authUrl } from "../../../helpers/scripts/apiUrls";
+import { authUrl } from "../../helpers/scripts/apiUrls";
 import { Observable } from "rxjs";
 import { RegisterModel, RegisterStatusModel } from "../../models/auth/register.model";
 
