@@ -1,5 +1,9 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
+# Certificates for SSL
+*.pem
+*.crt
+
 # Compiled output
 /dist
 /tmp
