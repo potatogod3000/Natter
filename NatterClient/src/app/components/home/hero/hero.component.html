@@ -1,0 +1,21 @@
+<div class="container flex flex-1 flex-col items-center justify-center pt-40 pb-32 text-white text-center">
+    <h1 class="text-7xl font-palanquin font-extrabold py-5 text-accent">
+        Stay Connected, Anytime, Anywhere!
+    </h1>
+    <p class="text-xl font-montserrat font-bold dark:text-light text-dark">
+        Experience the Ultimate Chatting App - Instant Communication, Rich
+        Features, and More!
+    </p>
+
+    @if (!authStore.getAuth.isAuthenticated) {
+        <a routerLink="register">
+            <button class="button-hero-accent">Start Chatting</button>
+        </a>
+    }
+
+    @else {
+        <a routerLink="chat">
+            <button class="button-hero-accent">Start Chatting</button>
+        </a>
+    }
+</div>

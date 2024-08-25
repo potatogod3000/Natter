@@ -1,0 +1,27 @@
+<section class="bg-gradient-to-b dark:from-dark-soft dark:to-dark from-light-soft to-light">
+    <app-hero />
+</section>
+
+<section class="dark:bg-dark bg-light">
+    <app-features />
+</section>
+
+<section class="bg-gradient-to-b dark:from-dark dark:to-dark-soft from-light to-light-soft font-palanquin">
+    <div class="container flex flex-col items-center justify-center py-20 text-center">
+        <h1 class="dark:text-light text-dark font-extrabold text-4xl">
+            Start Chatting with Your Friends Now!
+        </h1>
+
+        @if (!authStore.getAuth.isAuthenticated) {
+            <a routerLink="register">
+                <button class="button-hero-accent">Sign up / Login</button>
+            </a>
+        }
+
+        @else {
+            <a routerLink="chat">
+                <button class="button-hero-accent">Click Here</button>
+            </a>
+        }
+    </div>
+</section>
