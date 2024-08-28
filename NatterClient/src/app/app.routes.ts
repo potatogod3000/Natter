@@ -16,9 +16,29 @@ export const routes: Routes = [
     {
         path: 'profile',
         loadComponent: () =>
-            import('./components/profile/profile.component').then(
-                (mod) => mod.ProfileComponent
-            ),
+            import('./components/profile/profile.component').then((mod) => mod.ProfileComponent),
+        children: [
+            {
+                path: "",
+                redirectTo: "track",
+                pathMatch: "full"
+            },
+            {
+                path: "track",
+                loadComponent: () =>
+                    import('./components/profile/user-activity/user-activity.component').then((mod) => mod.UserActivityComponent)
+            },
+            {
+                path: "update",
+                loadComponent: () =>
+                    import('./components/profile/update-user/update-user.component').then((mod) => mod.UpdateUserComponent)
+            },
+            {
+                path: "delete",
+                loadComponent: () =>
+                    import('./components/profile/delete-user/delete-user.component').then((mod) => mod.DeleteUserComponent)
+            }
+        ]
     },
     {
         path: 'login',
