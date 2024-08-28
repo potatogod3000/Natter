@@ -1,0 +1,15 @@
+<div class="form-card p-4">
+    <h1 class="text-2xl text-center">Messages</h1>
+
+    @if (messages.length === 0) {
+        <div>
+            <p class="text-center mt-2 text-sm text-gray-500">You haven't sent any message in any server yet.</p>
+        </div>
+    }
+
+    <div>
+        @for(message of messages(); track message) {
+            <div></div>
+        }
+    </div>
+</div>

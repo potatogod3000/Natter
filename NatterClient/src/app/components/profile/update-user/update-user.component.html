@@ -1,0 +1,86 @@
+<div class="form-card">
+
+    <h1 class="text-xl pt-4 flex justify-center">Update Profile</h1>
+
+    <form class="flex flex-col pt-2 px-4 pb-4 gap-4">
+        <div class="flex flex-col">
+            <label for="emailField">E-Mail</label>
+            <div [textContent]="userModel().email"></div>
+        </div>
+
+        <div class="flex flex-col">
+            <label for="usernameField">Username</label>
+            <input type="text" name="username" [(ngModel)]="userModel().username" id="usernameField" class="input" />
+        </div>
+
+        <div class="flex flex-col">
+            <label>Country</label>
+            <select name="country" [(ngModel)]="userModel().country" class="input" (change)="getAreaCodes()">
+                <option value="" [selected]='userModel().country === "" ? true : false' disabled>Please select a country
+                </option>
+
+                @for (countryInfo of countries; let index = $index; track index) {
+                    <option [value]="countryInfo.cca2">
+                        {{ countryInfo.flag }} {{ countryInfo.name.common }}
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="flex flex-col">
+            <label>Phone Number</label>
+            <div class="flex gap-4">
+                <select class="w-32 input text-center" name="phoneNumberAreaCode" [(ngModel)]="userModel().phoneNumberAreaCode">
+                    <option value="">Select Code</option>
+
+                    @for(code of phoneNumberAreaCodes; let index = $index; track index) {
+                        <option [value]="code">
+                            {{ code }}
+                        </option>
+                    }
+                </select>
+                <input type="text" pattern="[0-9][+,-, ]" name="phoneNumber" [(ngModel)]="userModel().phoneNumber" class="input w-full"
+                    placeholder="Phone Number" />
+            </div>
+        </div>
+
+        <div class="flex flex-col">
+            <label>Password</label>
+            <input type="password" name="password" [(ngModel)]="userModel().password" class="input"
+                placeholder="Type Your Password to Confirm Changes" />
+        </div>
+
+        <div class="flex justify-center">
+            <button type="button" (click)="submitChanges()" class="border py-2 px-4" [disabled]="userModel().password === '' ? true : false">
+                Update
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="form-card">
+
+    <h1 class="flex justify-center text-xl pt-4">Change Password</h1>
+
+    <form class="flex flex-col gap-4 px-4 pb-4 pt-2">
+        <div class="flex flex-col">
+            <label>Current Password</label>
+            <input type="password" name="current-password" [(ngModel)]="passwordModel.currentPassword" class="input" />
+        </div>
+
+        <div class="flex flex-col">
+            <label>New Password</label>
+            <input type="password" name="new-password" [(ngModel)]="passwordModel.newPassword" class="input" />
+        </div>
+
+        <div class="flex flex-col">
+            <label>Re-enter New Password</label>
+            <input type="password" name="confirm-password" [(ngModel)]="passwordModel.confirmPassword" class="input" />
+        </div>
+
+        <div class="flex justify-center">
+            <button type="button" (click)="submitNewPassword()" class="px-4 py-2 border"
+                [disabled]="checkPasswords()">Update</button>       
+        </div>
+    </form>
+</div>
