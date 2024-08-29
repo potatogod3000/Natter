@@ -12,7 +12,7 @@
             Start Chatting with Your Friends Now!
         </h1>
 
-        @if (!authStore.getAuth.isAuthenticated) {
+        @if (!authStore.currentAuthStatus().isAuthenticated) {
             <a routerLink="register">
                 <button class="button-hero-accent">Sign up / Login</button>
             </a>

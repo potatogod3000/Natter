@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ServerComponent } from './server/server.component';
-import { ServerModel } from '../../models/chat/server.model';
+import { initialServerModel, ServerModel } from '../../models/chat/server.model';
 import { ServerService } from '../../services/chat/server.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -16,10 +16,7 @@ import { AppStore } from '../../stores/app.store';
 })
 
 export class ChatComponent implements OnInit, OnDestroy {
-    serverData = signal<ServerModel>({
-        name: "Home",
-        img: ""
-    });
+    serverData = signal<ServerModel>(initialServerModel);
 
     serversJoined = signal<Array<ServerModel>>([]);
 

@@ -7,7 +7,7 @@
         Features, and More!
     </p>
 
-    @if (!authStore.getAuth.isAuthenticated) {
+    @if (!authStore.currentAuthStatus().isAuthenticated) {
         <a routerLink="register">
             <button class="button-hero-accent">Start Chatting</button>
         </a>

@@ -29,5 +29,50 @@
     }
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+:root {
+    --navbar-height: 48px;
+    --footer-height: 194px;
+}
+
+html, body { 
+    height: 100%;
+}
+
+body { 
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+.navbar-bottom-padding {
+    padding-top: 72px;
+}
+
+.snackbar-success {
+    .mat-mdc-button.mat-mdc-snack-bar-action {
+        color: green !important;
+    }
+
+    .mat-mdc-snack-bar-label {
+        color: green !important;
+    }
+}
+
+.snackbar-danger {
+    .mat-mdc-button.mat-mdc-snack-bar-action {
+        color: red !important;
+    }
+
+    .mat-mdc-snack-bar-label {
+        color: red !important;
+    }
+}
+
+.snackbar-warning {
+    .mat-mdc-button.mat-mdc-snack-bar-action {
+        color: yellow !important;
+    }
+
+    .mat-mdc-snack-bar-label {
+        color: yellow !important;
+    }
+}
