@@ -6,6 +6,7 @@ import { AuthService } from './services/auth/auth.service';
 import { AuthStore } from './stores/auth.store';
 import { HttpErrorResponse } from '@angular/common/http';
 import { initialLoginStatus } from './models/auth/login.model';
+import { AppStore } from './stores/app.store';
 
 @Component({
     selector: 'app-root',
@@ -19,23 +20,34 @@ export class AppComponent implements OnInit {
 
     constructor (private _authService: AuthService, 
         private _authStore: AuthStore, 
-        private _router: Router)
+        private _router: Router,
+        public appStore: AppStore)
     {}
 
     // Perform Auth Check on Application Init
     ngOnInit(): void {
-        this._authService.performAuthCheck()
-        .subscribe(
-            (response) => {
-                this._authStore.setAuth = response;
-
-                if (!response.isAuthenticated) {
-                    this._router.navigateByUrl("/login");
+        this.performAuthCheck();
+    }
+    
+    private performAuthCheck() {
+        try {
+            this._authService.performAuthCheck()
+            .subscribe({
+                next: (response) => {
+                    this._authStore.currentAuthStatus.set(response);
+                                
+                    if (!response.isAuthenticated) {
+                        this._router.navigateByUrl("/login");
+                    }
+                },
+                error: (error: HttpErrorResponse) => {                
+                    this._authStore.currentAuthStatus.set(initialLoginStatus);
                 }
-            },
-            (error: HttpErrorResponse) => {                
-                this._authStore.setAuth = initialLoginStatus;
-            }
-        );
+            });
+        }
+
+        catch (err) {
+            console.log("Exception", err);
+        }
     }
 }

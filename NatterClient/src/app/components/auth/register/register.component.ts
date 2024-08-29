@@ -36,29 +36,41 @@ export class RegisterComponent implements OnInit {
     constructor(private _authService: AuthService, private _countriesService: CountriesService, private _router: Router) {}
 
     ngOnInit() {
-        this._countriesService.getCountries()
-        .subscribe({
-            next: (response) => {
-                this.countries = this._countriesService.sortByCountryName(response);
-            },
-            error: (error: HttpErrorResponse) => {
-                console.log("Error occured when fetching countries:\nStatus Code:\t" + error.status + "\tStatus:\t" + error.statusText);
-            }
-        });
+        this.getCountries();
+    }
+
+    private getCountries() {
+        try {
+            this._countriesService.getCountries()
+            .subscribe({
+                next: (response) => {
+                    this.countries = this._countriesService.sortByCountryName(response);
+                },
+                error: (error: HttpErrorResponse) => {
+                    console.log("Error", error);
+                }
+            });
+        }
+
+        catch (err) {
+            console.log("Exception", err);
+        }
     }
 
     async submitAction() {
         try {
             this._authService.performRegistration(this.registerModel)
-            .subscribe(
-                (response) => {
+            .subscribe({
+                next: (response) => {
                     console.log(response);
                 },
-                (error: HttpErrorResponse) => {
+                error: (error: HttpErrorResponse) => {
                     console.log(error.error);
                 }
-            );
-        } catch (error) {            
+            });
+        }
+        
+        catch (err) {
             this.registrationSuccessful = false;
         }
     }

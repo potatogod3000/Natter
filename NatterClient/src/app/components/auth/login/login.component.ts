@@ -29,18 +29,17 @@ export class LoginComponent {
     async loginAction() {
         try {
             this._authService.performLogin(this.loginModel)
-            .subscribe(
-                (response) => {
+            .subscribe({
+                next: (response) => {
                     if (response.isSuccess && response.isAuthenticated) {                    
-                        this._authStore.setAuth = response;
+                        this._authStore.currentAuthStatus.set(response);
                         this._router.navigateByUrl("/");
-                        console.log(response);
                     }
                 },
-                (error: HttpErrorResponse) => {
-                    this._authStore.setAuth = error.error;
+                error: (error: HttpErrorResponse) => {
+                    this._authStore.currentAuthStatus.set(error.error);
                 }
-            );
+            });
         }
         catch (exception) {
             console.log(exception);
