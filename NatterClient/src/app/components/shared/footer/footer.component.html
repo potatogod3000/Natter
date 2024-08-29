@@ -9,7 +9,7 @@
             <a routerLink=""  class="max-sm:py-2 max-sm:w-36 text-center sm:px-5">Home</a>
             <a routerLink="chat" class="max-sm:py-2 max-sm:w-36 text-center sm:px-5">Natter Chat</a>
 
-            @if (!authStore.getAuth.isAuthenticated) {
+            @if (!authStore.currentAuthStatus().isAuthenticated) {
                 <a routerLink="register" class="max-sm:py-2 max-sm:w-36 text-center sm:px-5">
                     Login / Register
                 </a>

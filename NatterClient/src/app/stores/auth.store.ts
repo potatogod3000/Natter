@@ -6,17 +6,7 @@ import { initialLoginStatus, LoginStatusModel } from "../models/auth/login.model
 })
 
 export class AuthStore {
-    private _currentAuthStatus;
+    currentAuthStatus = signal<LoginStatusModel>(initialLoginStatus);
 
-    constructor() {
-        this._currentAuthStatus = signal<LoginStatusModel>(initialLoginStatus);
-    }
-
-    get getAuth() {
-        return this._currentAuthStatus();
-    }
-
-    set setAuth(loginStatus: LoginStatusModel) {
-        this._currentAuthStatus.set(loginStatus);
-    }
+    constructor() {}
 }

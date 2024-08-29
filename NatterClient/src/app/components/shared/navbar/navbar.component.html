@@ -1,40 +1,27 @@
-<header
-    #navbar
-    id="navbar"
-    class="fixed top-0 inset-x-0 z-10 bg-light-soft/90 dark:bg-dark-soft/80 shadow-sm shadow-dark-soft/20 dark:shadow-light-soft/20 filter backdrop-blur transition-all duration-500"
->
+<header #navbar id="navbar"
+    class="fixed top-0 inset-x-0 z-10 bg-light-soft/90 dark:bg-dark-soft/80 shadow-sm shadow-dark-soft/20 dark:shadow-light-soft/20 filter backdrop-blur transition-all duration-500">
     <nav class="container mx-auto py-2">
         <ul>
-            <div
-                class="flex items-cen ter justify-between text-dark dark:text-light font-bold"
-            >
+            <div class="flex items-cen ter justify-between text-dark dark:text-light font-bold">
                 <li>
                     <a routerLink="" class="flex gap-1">
                         <img src="/favicon.ico" width="32" />
-                        <span class="font-palanquin text-xl text-accent"
-                            >Natter</span
-                        >
+                        <span class="font-palanquin text-xl text-accent">Natter</span>
                     </a>
                 </li>
 
                 <div class="max-md:hidden md:flex md:items-center md:gap-8">
                     <li>
-                        <a
-                            routerLink="chat"
-                            active-class="text-accent"
-                            class="hover:underline hover:text-accent-light underline-offset-8 transition-all duration-200"
-                        >
+                        <a routerLink="chat" routerLinkActive="text-accent"
+                            class="hover:underline hover:text-accent-light underline-offset-8 transition-all duration-200">
                             Natter Chat
                         </a>
                     </li>
 
-                    @if (!authStore.getAuth.isAuthenticated) {
+                    @if (!authStore.currentAuthStatus().isAuthenticated) {
                         <li>
-                            <a
-                                routerLink="register"
-                                active-class="text-accent"
-                                class="hover:underline hover:text-accent-light underline-offset-8 transition-all duration-200"
-                            >
+                            <a routerLink="register" routerLinkActive="text-accent"
+                                class="hover:underline hover:text-accent-light underline-offset-8 transition-all duration-200">
                                 Login / Register
                             </a>
                         </li>
@@ -42,9 +29,9 @@
 
                     @else {
                         <li>
-                            <a routerLink="profile" active-class="text-accent"
+                            <a routerLink="profile" routerLinkActive="text-accent"
                                 class="hover:underline hover:text-accent-light underline-offset-8 transition-all duration-200">
-                                Hello, {{ authStore.getAuth.username }}
+                                Hello, {{ authStore.currentAuthStatus().username }}
                             </a>
                         </li>
                     }
@@ -55,15 +42,14 @@
                 </div>
 
                 <div class="max-md:block md:hidden">
-                    <!-- <Transition mode="out-in" enter-active-class="transition-all duration-200"
-                        enter-from-class="transform rotate-90" leave-active-class="transition-all duration-200"
-                        leave-to-class="transform -rotate-90" title="Open Navbar">
-                        <Bars3Icon class="w-5 cursor-pointer" v-if="!showCollapsedNav"
-                            @click="showCollapsedNav = true" />
-                        <XMarkIcon class="w-5 cursor-pointer" v-else @click="showCollapsedNav = false" />
-                    </Transition>
-                    <NavCollapsed :show="showCollapsedNav" :userStore="props.userStore"
-                        @close="showCollapsedNav = false" /> -->
+                    @if (isNavCollapsed()) {
+                       <mat-icon class="w-5 cursor-pointer" (click)="showCollapsedNav()">menu</mat-icon>
+                    }
+
+                    @else {
+                        <mat-icon class="w-5 cursor-pointer" (click)="hideCollapsedNav()">close</mat-icon>
+                        <app-navbar-collapsed [isNavCollapsed]="isNavCollapsed" [currentAuthStatus]="authStore.currentAuthStatus" (collapseNavbar)="hideCollapsedNav()" />
+                    }
                 </div>
             </div>
         </ul>
