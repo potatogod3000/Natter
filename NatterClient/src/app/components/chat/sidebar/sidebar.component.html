@@ -1,0 +1,43 @@
+<div class="flex flex-col gap-y-5 py-3 items-center w-14">
+    <a routerLink="/"><img src="/favicon.ico" width="32" /></a>
+
+    <div class="flex items-center justify-center server-icon" title="Home" (click)="selectServer.emit('home')">
+        <mat-icon class="text-dark dark:text-light">home</mat-icon>
+    </div>
+
+    <div class="flex items-center justify-center server-icon" (click)="createServer.emit()" title="Create Server">
+        <mat-icon class="text-dark dark:text-light">add</mat-icon>
+    </div>
+
+    <div class="border-t dark:border-light border-dark w-4/5"></div>
+
+    
+    @for (server of serversJoined; track server.name) {
+        <div class="flex flex-grow items-center justify-center server-icon" (click)="selectServer.emit(server.name)">
+
+            @if (server.img) {
+                <img [src]="server.img" width="28" class="p-2" [title]="server.name" />
+            }
+
+            @else {
+                <mat-icon class="text-dark dark:text-light" [title]="server.name">dns</mat-icon>
+            }
+        </div>
+    }
+
+    <div class="absolute bottom-12 text-dark dark:text-light sm:hidden"
+        [title]="collapsedSidebar ? 'Expand Sidebar' : 'Collapse Sidebar'">
+
+        @if (!collapsedSidebar) {
+            <mat-icon class="cursor-pointer" (click)="collapseSidebar.emit(true)">chevron_left</mat-icon>
+        }
+
+        @else {
+            <mat-icon class="cursor-pointer" (click)="collapseSidebar.emit(false)">chevron_right</mat-icon>
+        }
+    </div>
+
+    <div class="absolute bottom-3 cursor-pointer text-dark dark:text-light">
+        <app-theme-switcher />
+    </div>
+</div>

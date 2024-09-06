@@ -1,0 +1,37 @@
+@if (!isNavCollapsed()) {
+    <div class="absolute top-12 inset-x-0 p-2 max-h-screen bg-light-soft/90 dark:bg-dark-soft/80 shadow-sm shadow-dark-soft/20 dark:shadow-light-soft/20 filter backdrop-blur transition-all duration-500 border-t border-accent">
+        <ul class="flex flex-col items-center">
+            <li class="w-4/6 border-b dark:border-light/30 border-dark/30 py-2">
+                <a routerLink='/home' routerLinkActive="text-accent" class="hover:underline underline-offset-8 transition-all duration-200 cursor-pointer" (click)="collapseNavbar.emit()">
+                    Home
+                </a>
+            </li>
+
+            <li class="w-4/6 border-b dark:border-light/30 border-dark/30 py-2">
+                <a routerLink='/chat' routerLinkActive="text-accent" class="hover:underline underline-offset-8 transition-all duration-200 cursor-pointer" (click)="collapseNavbar.emit()">
+                    Natter Chat
+                </a>
+            </li>
+
+            @if (!currentAuthStatus().isAuthenticated) {
+                <li class="w-4/6 border-b dark:border-light/30 border-dark/30 py-2">
+                    <a routerLink='/register' routerLinkActive="text-accent" class="hover:underline underline-offset-8 transition-all duration-200 cursor-pointer" (click)="collapseNavbar.emit()">
+                        Login / Register
+                    </a>
+                </li>
+            }
+
+            @else {
+                <li class="w-4/6 border-b dark:border-light/30 border-dark/30 py-2">
+                    <a routerLink='/profile' routerLinkActive="text-accent" class="hover:underline underline-offset-8 transition-all duration-200 cursor-pointer" (click)="collapseNavbar.emit()">
+                        Hello, {{ currentAuthStatus().username }}
+                    </a>
+                </li>
+            }
+            
+            <li class="w-4/6 flex items-center justify-between py-2">
+                Theme <app-theme-switcher />
+            </li>
+        </ul>
+    </div>
+}

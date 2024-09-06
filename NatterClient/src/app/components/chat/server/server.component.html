@@ -1,0 +1,12 @@
+<div class="flex flex-col h-full">
+    <section class="flex-grow">
+        <div class="text-center dark:text-light text-dark text-2xl" [textContent]="serverData.name"></div>
+    </section>
+
+    @if (serverData.name !== 'Home') {
+        <section>
+            <input class="w-full h-8 outline-none p-2 rounded-lg bg-gray-600 text-white" [(ngModel)]="chatMessage">
+        </section>
+    }
+
+</div>
