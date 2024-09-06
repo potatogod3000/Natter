@@ -1,0 +1,10 @@
+<div class="fixed inset-y-2 left-2 rounded-lg bg-light-soft dark:bg-dark-soft border hover:border-accent border-accent/10 overflow-y-scroll">
+    <chat-sidebar [serversJoined]="serversJoined()" (selectServer)="loadServer($event)" [collapsedSidebar]="appStore.chatSidebarCollapsed()" (collapseSidebar)="collapseSidebar($event)" />
+</div>
+
+<div
+    class="fixed top-2 bottom-2 left-[80px] right-2 bg-light-soft dark:bg-dark-soft rounded-lg overflow-y-scroll border hover:border-accent border-accent/10">
+    <div class="absolute bottom-0 top-0 right-0 left-0 w-full p-4">
+        <chat-server [serverData]="serverData()" />
+    </div>
+</div>

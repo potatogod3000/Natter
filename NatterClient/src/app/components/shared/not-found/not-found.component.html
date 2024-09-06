@@ -1,0 +1,32 @@
+<style>
+    .page-size {
+        min-height: calc(100vh - var(--footer-height));
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        margin: 64px;
+    }
+</style>
+
+<div class="page-size flex justify-center items-center">
+    <div class="text-dark dark:text-light content">
+        <img src="assets/images/404.png" alt="404 Image" width="400px" />
+        <div class="text-center">
+            <h1 class="font-bold text-8xl mb-3">
+                Page Not Found
+            </h1>
+
+            <p class="font-light text-pretty text-2xl">Sorry, but the page that you requested doesnt exist!</p>
+
+            <button type="button" class="button-hero-accent">
+                <a routerLink="/" class="flex justify-center items-center">
+                    Go To Home <mat-icon>arrow_right</mat-icon>
+                </a>
+            </button>
+        </div>
+    </div>
+</div>

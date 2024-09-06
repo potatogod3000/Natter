@@ -1,0 +1,15 @@
+<main class="flex flex-col min-h-screen">
+
+    @if (appStore.navBarsVisible()) {
+        <app-navbar />
+    }
+
+    <div class="flex-grow">
+        <router-outlet />
+    </div>
+    
+    @if (appStore.navBarsVisible()) {
+        <app-footer />
+    }
+    
+</main>

@@ -1,0 +1,96 @@
+<div class="flex h-screen items-center justify-center">
+    <div class="flex items-center justify-center text-dark dark:text-light">
+        <div class="form-card border border-accent flex flex-col justify-center items-center px-8">
+            <h1 class="text-3xl pt-4">{{ pageTitle }}</h1>
+
+            <form class="flex flex-col gap-4 py-4">
+                <div class="flex flex-col">
+                    <label>EMail</label>
+                    <input
+                        type="email"
+                        name="email"
+                        [(ngModel)]="registerModel.email"
+                        class="input"
+                    />
+                </div>
+
+                <div class="flex flex-col">
+                    <label>Username</label>
+                    <input
+                        type="text"
+                        name="username"
+                        [(ngModel)]="registerModel.username"
+                        class="input"
+                    />
+                </div>
+
+                <div class="flex flex-col">
+                    <label>Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        [(ngModel)]="registerModel.password"
+                        class="input"
+                    />
+                </div>
+
+                <div class="flex flex-col">
+                    <label>Country</label>
+                    <select name="country" [(ngModel)]="registerModel.country" class="input" (change)="getAreaCodes()">
+                        <option value="" selected>Select a country</option>
+
+                        @for (country of countries; track country.name) {
+                            <option [value]="country.cca2">
+                                {{ country.flag }} {{ country.name.common }}
+                            </option>
+                        }
+
+                    </select>
+                </div>
+
+                <div class="flex flex-col">
+                    <label>Phone Number</label>
+                    <div class="flex gap-4">
+                        <select name="phoneNumberAreaCode" [(ngModel)]="registerModel.phoneNumberAreaCode" class="w-32 text-center input">
+                            <option value="">Calling Code</option>
+
+                            @for (code of phoneNumberAreaCodes; track code; let index = $index) {
+                                <option [value]="code">{{ code }}</option>
+                            }
+
+                        </select>
+
+                        <input type="tel" name="phoneNumber" [(ngModel)]="registerModel.phoneNumber" pattern="[0-9]{10}" class="w-full input" />
+                    </div>
+                </div>
+
+                <div class="flex justify-center">
+                    <button (click)="submitAction()" class="px-4 py-2 border">
+                        Submit
+                    </button>
+                </div>
+            </form>
+
+            <!-- @if (!registrationSuccessful && received.message) {
+                <div class="text-red-400">{{ received.message }}</div>
+            }
+            
+            @if (!registrationSuccessful && received.errors) {
+                @for (error of received.errors; track error; let index = $index) {
+                    <div class="text-red-400">{{ error }}</div>
+                }
+            } -->
+
+            <p
+                class="pb-4 flex items-center justify-center gap-1 cursor-pointer hover:text-accent transition-all duration-150"
+                (click)="switchToLogin()"
+            >
+                Already have a Natter Account?
+                <span class="flex items-center gap-1">
+                    Login
+                    <!-- ArrowRightIcon class="w-4" /-->
+                </span>
+            </p>
+        </div>
+    </div>
+</div>
